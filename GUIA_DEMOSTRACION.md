@@ -105,6 +105,22 @@ Muestra al profesor el monitoreo en la nube de nivel corporativo para auditar co
     3. **Enmascaramiento de Identidad:** Señala que el identificador registrado es **`M**** G****`**, demostrando que tus políticas de privacidad (PII Masking) protegen los datos del usuario antes de subirlos a la nube.
     4. **Generaciones & Prompts:** Explica cómo la plataforma registra la llamada cognitiva, el prompt del sistema y la respuesta generada por el LLM.
 
+### 3.6 Evaluación de Calidad Automatizada con Datasets en Langfuse
+Demuestra al profesor el estándar de oro para evaluar y blindar el comportamiento del LLM contra alucinaciones.
+*   **Cómo probarlo (En vivo):**
+    1. **Crear el Dataset en la nube:** Ejecuta el siguiente comando para crear de forma autónoma el dataset `trading_agent_evaluation` en tu consola con 3 casos de prueba preestablecidos:
+       ```powershell
+       & "C:\OpenCode\sesion_3\.venv\Scripts\python.exe" "C:\OpenCode\1-integracion-tbf\codigo\scripts\create_langfuse_dataset.py"
+       ```
+    2. **Ejecutar la corrida de evaluación en vivo:** Corre la evaluación para descargar los ítems, procesarlos con tu agente de Gemini y registrar las comparativas y puntajes en la nube:
+       ```powershell
+       & "C:\OpenCode\sesion_3\.venv\Scripts\python.exe" "C:\OpenCode\1-integracion-tbf\codigo\scripts\run_langfuse_evaluation.py"
+       ```
+*   **Qué señalar en vivo en el Panel de Langfuse:**
+    1. Abre la pestaña **"Datasets"** en tu consola de Langfuse Cloud.
+    2. Selecciona **`trading_agent_evaluation`** y enseña los 3 casos de prueba almacenados.
+    3. Ve a la pestaña **"Runs"** para mostrar la comparativa lado a lado entre la Entrada, la Respuesta generada por Gemini y el Resultado Esperado de Referencia. Explica cómo esto te permite calificar de forma automatizada la calidad del enmascaramiento y los números.
+
 ---
 
 ## 📊 PASO 4: Aseguramiento de Calidad y Entregas (Métricas p50 / p95)

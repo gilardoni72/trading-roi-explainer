@@ -123,7 +123,7 @@ Se ejecutaron de forma determinista 6 pruebas unitarias locales offline que repr
 | **Falla DB** | Escritura bloqueada en `mock_db.json` | HTTP 503 Service Unavailable | HTTP 503 Service Unavailable | `test_trading_api.py` | **Aprobó**. Transaccionalidad estricta ACID. Aborta Gemini. |
 
 -   **Pruebas deterministas:** `python -m pytest codigo/tests/test_trading_api.py -v` corriendo localmente al 100% de éxito.
--   **Métrica de Evaluación:** Coherencia de respuestas evaluada mediante test de concordancia lógica de variables de salida en el reporte generado.
+-   **Métrica y Juez de Evaluación (Datasets en Langfuse Cloud):** Se diseñó un Dataset de evaluación en Langfuse llamado `trading_agent_evaluation` con 3 ítems de prueba (casos válidos, variantes y casos extremos). El script `run_langfuse_evaluation.py` descarga de forma dinámica los ítems de prueba de la nube de Langfuse, los ejecuta con tu agente de Gemini y sube los resultados vinculados como corridas de evaluación (`Dataset Runs`) para auditar la calidad, consistencia y el enmascaramiento de datos.
 
 ---
 
