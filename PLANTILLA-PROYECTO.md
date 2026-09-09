@@ -103,7 +103,9 @@ Copia de la plantilla oficial adaptada al Trabajo Final de Integración para el 
 -   **Patrón elegido:** **Connector + Adapter + LLM Explainer**. Aísla las API de origen complejas, ejecuta de forma segura los cálculos de comisiones en el backend para evitar alucinaciones, y utiliza al modelo de lenguaje como un explicador amigable de datos fríos estructurados.
 -   **Alternativa considerada:** Orquestación directa en el LLM (Agent Tool-Calling). No se requiere en esta fase por latencias elevadas e inconsistencias del modelo al computar tasas flotantes.
 -   **Responsabilidades:** FastAPI valida la cabecera; el Adaptador enmascara nombres e implementa lógica matemática; el Conector consulta CoinGecko; y Gemini 3.5 genera el reporte analítico en español.
--   **Trazabilidad OpenTelemetry (OTel):** Cada petición genera un TraceID único. Los spans `get_asset_price`, `simulate_transaction` y `run_query` desglosan la duración parcial y capturan excepciones de forma unificada.
+-   **Trazabilidad OpenTelemetry (OTel) y Langfuse Cloud:** 
+    *   *Trazabilidad Técnica:* Cada petición genera un TraceID único. Los spans `get_asset_price`, `simulate_transaction` y `run_query` desglosan la duración parcial y capturan excepciones de forma unificada.
+    *   *Trazabilidad Cognitiva de LLM Ops (Langfuse Cloud):* El sistema se integra de forma directa con Langfuse. Al realizar una llamada a Gemini 3.5, el adaptador registra de forma automatizada la traza de ejecución, el costo estimado en dólares, el volumen de tokens consumidos, las reglas del prompt del sistema y el prompt del usuario de forma sanitizada (User ID enmascarado como `M**** G****` en la nube para protección de PII).
 -   **Logs Correlacionados:** Los TraceIDs se inyectan dinámicamente en los logs de FastAPI: `[TraceId: 7f81b2c499... | SpanId: a01b3c...]`.
 
 ---

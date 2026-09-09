@@ -3,6 +3,7 @@ import logging
 import google.generativeai as genai
 from services.trading_service import TradingService, TransactionResult
 from observability import tracer, trace
+from langfuse import Langfuse
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +17,15 @@ class FinancialAgentManager:
         # Configurar API de Gemini
         if not self.demo_mode:
             genai.configure(api_key=self.api_key)
+            
+        # Inicializar Langfuse de forma opcional si estan las credenciales configuradas
+        self.langfuse = None
+        if os.environ.get("LANGFUSE_PUBLIC_KEY") and os.environ.get("LANGFUSE_SECRET_KEY"):
+            try:
+                self.langfuse = Langfuse()
+                logger.info("Langfuse inicializado exitosamente.")
+            except Exception as e:
+                logger.warning(f"No se pudo inicializar Langfuse: {str(e)}")
 
     def _generate_mock_explanation(self, user_query: str, tx: TransactionResult) -> str:
         """
@@ -98,6 +108,30 @@ class FinancialAgentManager:
                     system_instruction=system_prompt
                 )
 
+                # Inicializar traza en Langfuse si esta habilitado de forma segura
+                trace_lf = None
+                generation_lf = None
+                if self.langfuse:
+                    try:
+                        trace_lf = self.langfuse.trace(
+                            name="Simulacion de Trading",
+                            user_id=tx.user_id,
+                            input=user_query,
+                            metadata={
+                                "asset": tx.asset,
+                                "monto_usd": tx.monto_invertido,
+                                "roi_porcentaje": tx.roi_porcentaje
+                            }
+                        )
+                        generation_lf = trace_lf.generation(
+                            name="Explicacion Gemini 3.5",
+                            model=self.model_name,
+                            model_parameters={"temperature": 0.3},
+                            input=prompt_user
+                        )
+                    except Exception as lf_err:
+                        logger.warning(f"Error registrando inicio de traza en Langfuse: {str(lf_err)}")
+
                 # Controlar modo streaming o no streaming
                 if stream:
                     # Con streaming (streamGenerateContent / generate_content_stream)
@@ -105,13 +139,29 @@ class FinancialAgentManager:
                     full_text = ""
                     for chunk in response:
                         full_text += chunk.text
+                    if generation_lf:
+                        try:
+                            generation_lf.end(output=full_text)
+                        except Exception:
+                            pass
                     return full_text
                 else:
                     # Sin streaming (generateContent / generate_content)
                     response = model.generate_content(prompt_user)
-                    return response.text
+                    res_text = response.text
+                    if generation_lf:
+                        try:
+                            generation_lf.end(output=res_text)
+                        except Exception:
+                            pass
+                    return res_text
 
             except Exception as e:
+                if 'generation_lf' in locals() and generation_lf:
+                    try:
+                        generation_lf.end(output=f"Error: {str(e)}", status_message="FAILED")
+                    except Exception:
+                        pass
                 logger.error(f"Error llamando a Gemini Real: {str(e)}. Fallback a mock.")
                 span.set_status(trace.StatusCode.ERROR, description=str(e))
                 span.record_exception(e)

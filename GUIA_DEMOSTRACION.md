@@ -93,6 +93,18 @@ Demuestra el comportamiento estricto y consistente de transaccionalidad financie
     3. **Trazabilidad de Error:** Observa cómo OpenTelemetry registra de inmediato un Span en estado **`ERROR`** con la excepción `PermissionError` y el mensaje de error de acceso en disco.
     4. *(¡No olvides desmarcar la casilla de "Solo lectura" al finalizar la demostración para que todo vuelva a la normalidad!)*
 
+### 3.5 Observabilidad de LLM Ops con Langfuse Cloud
+Muestra al profesor el monitoreo en la nube de nivel corporativo para auditar costos, prompts y tokens en tiempo real.
+*   **Cómo probarlo (En vivo):**
+    1. Abre tu navegador de internet en **Langfuse Cloud**: 👉 **[us.cloud.langfuse.com](https://us.cloud.langfuse.com)**.
+    2. Configura tus claves de proyecto en el archivo local `.env` (`LANGFUSE_PUBLIC_KEY` y `LANGFUSE_SECRET_KEY`).
+    3. Realiza una simulación exitosa de inversión para el usuario `"Maria Gomez"`.
+*   **Qué señalar en vivo en el Panel de Langfuse:**
+    1. **Trazas (Traces):** Muestra el listado de ejecuciones de la simulación de trading.
+    2. **Costos en USD:** Señala cómo Langfuse calcula de forma automática el costo en dólares de tu simulación con Gemini 3.5 (ejemplo: `$0.0002 USD`), demostrando control estricto de presupuesto.
+    3. **Enmascaramiento de Identidad:** Señala que el identificador registrado es **`M**** G****`**, demostrando que tus políticas de privacidad (PII Masking) protegen los datos del usuario antes de subirlos a la nube.
+    4. **Generaciones & Prompts:** Explica cómo la plataforma registra la llamada cognitiva, el prompt del sistema y la respuesta generada por el LLM.
+
 ---
 
 ## 📊 PASO 4: Aseguramiento de Calidad y Entregas (Métricas p50 / p95)
