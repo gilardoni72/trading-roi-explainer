@@ -1,0 +1,21 @@
+# Entornos virtuales
+.venv/
+venv/
+env/
+ENV/
+
+# Python Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Variables de Entorno y Claves (SECRETOS)
+.env
+.env.local
+.env.*.local
+
+# Reportes y Bases de Datos temporales si aplica
+.pytest_cache/
+.coverage
+htmlcov/
