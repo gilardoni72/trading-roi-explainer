@@ -37,11 +37,29 @@ def create_guide_pdf():
     pdf.set_font("Helvetica", "", 10)
     pdf.set_text_color(75, 85, 99)
     intro_text = (
-        "Esta guia contiene todos los pasos ordenados para realizar una demostracion en vivo interactiva "
-        "y exitosa de tu trabajo final de integracion. Se enfoca en demostrar el comportamiento de "
-        "Streaming vs No Streaming, la seguridad de endpoints y la observabilidad con OpenTelemetry."
+        "Esta guia contiene la secuencia detallada de comandos paso a paso para realizar una demostracion "
+        "en vivo impecable y espectacular de tu trabajo final de integracion (Marcelo Gilardoni)."
     )
     pdf.multi_cell(0, 5, intro_text)
+    pdf.ln(5)
+
+    # PASO 0
+    pdf.set_font("Helvetica", "B", 12)
+    pdf.set_text_color(30, 41, 59)
+    pdf.cell(0, 8, "Paso 0: Preparacion Inicial de la Consola", 0, 1, "L")
+    pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+    pdf.ln(3)
+
+    pdf.set_font("Helvetica", "", 10)
+    pdf.set_text_color(75, 85, 99)
+    p0_desc = (
+        "Abre una terminal de PowerShell en tu computadora y ejecuta los siguientes comandos:\n"
+        "1. Posicionarte en la carpeta de tu trabajo final:\n"
+        "   cd C:\\OpenCode\\1-integracion-tbf\n"
+        "2. Activar el entorno virtual de Python:\n"
+        "   .\\.venv\\Scripts\\Activate.ps1"
+    )
+    pdf.multi_cell(0, 5, p0_desc)
     pdf.ln(5)
 
     # PASO 1
@@ -97,12 +115,10 @@ def create_guide_pdf():
     pdf.set_font("Helvetica", "", 10)
     pdf.set_text_color(75, 85, 99)
     p3_desc = (
-        "Demuestra el sistema de diagnostico empresarial de trazas y logs en tiempo real:\n"
-        "1. Desglose de Spans: Muestra los logs en consola '[OTel Span]' con las latencias "
-        "parciales de cada capa (conector, adaptador, Gemini).\n"
+        "Demuestra el sistema de diagnostico de trazas y logs en tiempo real:\n"
+        "1. Desglose de Spans: Muestra los logs '[OTel Span]' con las latencias por capa (conector, adaptador, Gemini).\n"
         "2. Correlacion de Logs: Resalta que cada registro de log posee el [TraceId: ... | SpanId: ...].\n"
-        "3. Diagnostico de Errores: Envia una solicitud con un ticker no valido como 'XYZ' y "
-        "observa como OTel marca el Span en 'ERROR' registrando la excepcion sin tumbar el servidor.\n"
+        "3. Diagnostico de Errores: Ejecuta un curl enviando un activo no valido como 'XYZ' y observa el Span de ERROR.\n"
         "4. Simulación de Falla en Base de Datos: Cambia 'mock_db.json' a 'Solo Lectura' en Windows. "
         "Verás cómo el sistema aborta de inmediato la llamada a Gemini para resguardar la consistencia "
         "financiera y le indica al cliente que vuelva a intentar (Retornando error 503)."
@@ -113,20 +129,58 @@ def create_guide_pdf():
     # PASO 4
     pdf.set_font("Helvetica", "B", 12)
     pdf.set_text_color(30, 41, 59)
-    pdf.cell(0, 8, "Paso 4: Pruebas y Medicion de Latencias ( p50 y p95 )", 0, 1, "L")
+    pdf.cell(0, 8, "Paso 4: Observabilidad en la Nube con Langfuse (LLM Ops)", 0, 1, "L")
     pdf.line(10, pdf.get_y(), 200, pdf.get_y())
     pdf.ln(3)
 
     pdf.set_font("Helvetica", "", 10)
     pdf.set_text_color(75, 85, 99)
     p4_desc = (
+        "1. Abre en tu navegador la consola web de Langfuse Cloud:\n"
+        "   https://us.cloud.langfuse.com\n"
+        "2. Señala el costo en USD, el conteo exacto de tokens de Gemini 3.5, "
+        "el enmascaramiento de datos personales de 'Maria Gomez' a 'M**** G****' en las trazas, "
+        "los prompts y generaciones de la simulacion."
+    )
+    pdf.multi_cell(0, 5, p4_desc)
+    pdf.ln(5)
+
+    # PASO 5
+    pdf.set_font("Helvetica", "B", 12)
+    pdf.set_text_color(30, 41, 59)
+    pdf.cell(0, 8, "Paso 5: Evaluacion de Calidad con Datasets en Langfuse", 0, 1, "L")
+    pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+    pdf.ln(3)
+
+    pdf.set_font("Helvetica", "", 10)
+    pdf.set_text_color(75, 85, 99)
+    p5_desc = (
+        "1. Crear el Dataset 'trading_agent_evaluation' en la nube:\n"
+        "   python codigo/scripts/create_langfuse_dataset.py\n"
+        "2. Correr la evaluacion en vivo de los 3 casos de prueba con Gemini:\n"
+        "   python codigo/scripts/run_langfuse_evaluation.py\n"
+        "3. En la consola de Langfuse, muestra la pestaña 'Runs' con la comparativa lado a lado."
+    )
+    pdf.multi_cell(0, 5, p5_desc)
+    pdf.ln(5)
+
+    # PASO 6
+    pdf.set_font("Helvetica", "B", 12)
+    pdf.set_text_color(30, 41, 59)
+    pdf.cell(0, 8, "Paso 6: Pruebas y Medicion de Latencias ( p50 y p95 )", 0, 1, "L")
+    pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+    pdf.ln(3)
+
+    pdf.set_font("Helvetica", "", 10)
+    pdf.set_text_color(75, 85, 99)
+    p6_desc = (
         "1. Ejecutar las pruebas unitarias y de enmascaramiento de datos:\n"
         "   python -m pytest codigo/tests/test_trading_api.py -v\n"
         "2. Ejecutar el benchmark para medir p50 y p95 latencia (10 llamadas consecutivas):\n"
         "   python codigo/scripts/benchmark_latencia.py\n"
         "   Se generara la tabla de percentiles en pantalla y se guardara en benchmark_results.json."
     )
-    pdf.multi_cell(0, 5, p4_desc)
+    pdf.multi_cell(0, 5, p6_desc)
     pdf.ln(5)
 
     # Guardar PDF final
