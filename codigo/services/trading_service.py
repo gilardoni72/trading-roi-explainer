@@ -5,6 +5,7 @@ import httpx
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any
 from config import settings
+from opentelemetry import trace
 from observability import tracer
 
 logger = logging.getLogger(__name__)
