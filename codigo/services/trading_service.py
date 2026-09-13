@@ -221,8 +221,13 @@ class TradingService:
             
             # Registrar transaccion en db local
             try:
-                with open(self.db_path, "r") as f:
-                    txs = json.load(f)
+                txs = []
+                if os.path.exists(self.db_path) and os.path.getsize(self.db_path) > 0:
+                    with open(self.db_path, "r") as f:
+                        try:
+                            txs = json.load(f)
+                        except json.JSONDecodeError:
+                            txs = []
                 txs.append(result.model_dump())
                 with open(self.db_path, "w") as f:
                     json.dump(txs, f, indent=4)

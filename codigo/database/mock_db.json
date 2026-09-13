@@ -1,0 +1,28 @@
+[
+    {
+        "user_id": "M**** G****",
+        "asset": "BTC",
+        "monto_invertido": 1500.0,
+        "precio_compra": 65103.55,
+        "cantidad_adquirida": 0.022925,
+        "comision_pagada": 7.5,
+        "precio_objetivo": 78124.26,
+        "valor_proyectado": 1791.0,
+        "retorno_usd": 291.0,
+        "roi_porcentaje": 19.4,
+        "is_demo": true
+    },
+    {
+        "user_id": "J*** P****",
+        "asset": "SOL",
+        "monto_invertido": 500.0,
+        "precio_compra": 149.23,
+        "cantidad_adquirida": 3.33378,
+        "comision_pagada": 2.5,
+        "precio_objetivo": 179.08,
+        "valor_proyectado": 597.0,
+        "retorno_usd": 97.0,
+        "roi_porcentaje": 19.4,
+        "is_demo": true
+    }
+]
