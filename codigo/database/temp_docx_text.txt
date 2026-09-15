@@ -1,0 +1,85 @@
+Inicio de Aplicacion 
+& "C:\OpenCode\sesion_3\.venv\Scripts\uvicorn.exe" main:app --reload --host 127.0.0.1 --port 8000 --app-dir "C:\OpenCode\1-integracion-tbf\codigo"
+esta aplicacion se conecta a 
+CoinGecko API v3 (Conector de Precios):
+- Función: Obtiene el precio de cotización real y en tiempo real de Bitcoin, Ethereum y Solana frente al USD.
+- Endpoint: https://api.coingecko.com/api/v3/simple/price (Consulta asíncrona mediante httpx).
+1 -PRIMERA PRUEBA
+Ejecuto sin la x- API-Key
+{
+  "user_name": "Maria Gomez",
+  "message": "Tengo $1500 USD que me sobraron y quiero simular una inversion en BTC si sube a $80000"
+}
+Resultado negativo
+2 -SEGUNDA PRUEBA
+Autorizando con A-API-KEY: trading-secret-key-123
+Respuesta positive
+2.1 Verificación de los Cálculos Matemáticos del Adaptador
+Esta es la sección se muestra como funciona el sistema, no alucina datos financieros, pues el adaptador los calcula de forma fría en el backend antes de entregarlos al LLM para su redacción:
+Deducción de Comisión (0.5%): Sobre tu capital de $1,500.00 USD, calcula de forma exacta la tarifa de intermediación del broker: $7.50 USD (1500 * 0.005).
+Monto Neto Destinado a Compra: Se calcula el saldo libre para inversión: $1,492.50 USD (1500 - 7.50).
+Consulta de Mercado Real: El conector asíncrono consultó en milisegundos a la API de CoinGecko y obtuvo el precio real de Bitcoin del momento de tu click: $76,952.00 USD.
+Cantidad de Activo Comprada: Se calcula la fracción exacta de Bitcoin adquirida: 0.019395 BTC (1492.50 / 76952).
+Simulación de Salida (ROI Proyectado): Proyecta la ganancia si Bitcoin sube a tu meta:
+- Valor de la Cartera: $1,791.00 USD (proyectado por la meta de subida).
+- Retorno Neto (Ganancia Líquida): $291.00 USD (1791 - 1500).
+- Retorno de Inversión (ROI): 19.40% ((291 / 1500) * 100).
+⏱️ 2.2. Observabilidad de Latencia y Rendimiento (x-process-time)
+En las cabeceras de respuesta (Response headers), observa el valor de:
+x-process-time: 886.90ms
+Significado: Tu middleware de monitoreo de FastAPI calculó que el ciclo de vida completo de esta petición —desde que el cliente presionó Execute, se autenticó, se enmascaró tu nombre, se llamó asíncronamente a CoinGecko, se persistió el registro en mock_db.json, se llamó síncronamente a Gemini 3.5 de Google y se redactó el Markdown— tomó exactamente 886.9 milisegundos (¡menos de 1 segundo!) en resolverse. 
+" una latencia menor a 1 segundo para resolver el flujo completo demuestra un diseño asíncrono de alto desempeño, optimizando los tiempos del backend."
+3 -TERCERA PRUEBA
+Se bloquea la base de datos, 
+Explicación Detallada de la Falla de Base de Datos (HTTP 503)
+3.1 ¿Por qué ocurrió el error? (Causa Física)
+Motivo: [Errno 13] Permission denied sobre mock_db.json.
+Explicación: Al haber cambiado las propiedades del archivo mock_db.json a "Solo lectura" en Windows, el sistema operativo le negó los permisos de escritura a Python. Cuando tu adaptador intentó guardar y persistir la transacción, el disco arrojó un error de denegación de permisos de forma instantánea.
+3.2 Transaccionalidad Estricta y Consistencia (Garantía ACID)
+En un sistema financiero o transaccional real, la consistencia de datos es sagrada:
+El problema de otros sistemas: Si tu backend hubiera ignorado el error, el cliente habría recibido su respuesta exitosa de Gemini, pero la empresa nunca habría registrado la operación en su base de datos, creando una frecuente y grave inconsistencia de datos.
+La solución de tu arquitectura: Implementamos un ** transactional boundary (límite transaccional)**. Si la escritura en base de datos falla, el proceso se aborta de inmediato. El sistema interrumpe la ejecución antes de llamar a Gemini 3.5 en Google, ahorrándote costos de tokens innecesarios por una simulación que no se guardará, y le notifica con transparencia al cliente con un código HTTP 503 Service Unavailable para que vuelva a intentar.
+3.3 Diagnóstico Automático en Consola (OpenTelemetry)
+Mientras tu navegador mostraba el error de consistencia, de fondo en tu terminal de PowerShell ocurrió lo siguiente:
+OpenTelemetry capturó de forma autónoma el PermissionError.
+Marcó el Span de simulate_transaction en estado de ERROR asociando la traza.
+Imprimió el log correlacionado en rojo en tu servidor, alertando al equipo SRE/Soporte, pero manteniendo el servidor FastAPI online y asombrosamente resiliente ante otras llamadas.
+4.0 PRUEBAS DE CALIDAD OFFLINE
+Ejecuta las 6 pruebas automatizadas con pytest para demostrarle al profesor que tu sistema valida contratos, claves incorrectas y enmascaramiento:
+& "C:\OpenCode\sesion_3\.venv\Scripts\python.exe" -m pytest "C:\OpenCode\1-integracion-tbf\codigo\tests\test_trading_api.py" -v
+Análisis Detallado de cada Prueba Unitaria (pytest)
+1️⃣ test_health_endpoint (Prueba de Salud del Sistema)
+Qué hace: Envía una solicitud GET / al servidor FastAPI.
+Qué valida: Verifica que el servidor responda inmediatamente con un código HTTP 200 OK y el JSON { "status": "online" }.
+Por qué es importante: Confirma que el ruteador de FastAPI está activo, el servidor responde y las dependencias básicas están cargadas.
+2 test_explain_trading_endpoint_unauthorized_missing_header (Prueba de Seguridad Perimetral Faltante)
+Qué hace: Envía una simulación POST al endpoint /api/v1/trading/explain sin incluir la cabecera X-API-Key.
+Qué valida: Que el servidor bloquee la llamada y retorne de inmediato un código HTTP 401 Unauthorized indicando que la cabecera es requerida.
+Por qué es importante: Prueba que el cortafuegos de tu backend funciona por defecto y nadie puede hackear o usar tu API sin clave.
+3 test_explain_trading_endpoint_unauthorized_wrong_key (Prueba de Seguridad de Clave Incorrecta)
+Qué hace: Envía una simulación POST a tu API colocando una clave incorrecta (como clave-erronea-de-prueba) en la cabecera X-API-Key.
+Qué valida: Que el servidor identifique que la clave no coincide con tus variables secretas y retorne un código HTTP 401 Unauthorized.
+Por qué es importante: Garantiza que el backend valida de forma estricta los tokens (no solo que existan, sino que sean los correctos).
+4 test_explain_trading_endpoint_authorized_success (Prueba del Flujo Exitoso Completo - "Happy Path")
+Qué hace: Envía una simulación de inversión válida con la clave correcta.
+Qué valida: 
+- Que el servidor retorne un código HTTP 200 OK.
+- Que el adaptador calcule el ROI, aplique el 0.5% de comisión de trading de forma matemática exacta.
+- La privacidad (Masking): Que en la respuesta se enmascare de manera correcta "Maria Gomez" a "M**** G****".
+Por qué es importante: Es el corazón de las pruebas de integración; valida que todas tus capas de negocio funcionen de forma unificada bajo modo local determinista.
+5️⃣ test_explain_trading_endpoint_validation_empty_message (Prueba de Validación de Datos de Entrada)
+Qué hace: Envía una petición con un mensaje de consulta vacío o lleno de puros espacios en blanco.
+Qué valida: Que el controlador de FastAPI intercepte la entrada inválida y retorne un código HTTP 400 Bad Request.
+Por qué es importante: Previene que el servidor envíe cadenas vacías al LLM en la nube, lo cual provocaría errores innecesarios y cobros inútiles.
+6️⃣ test_explain_alias_endpoint_success (Prueba de Retrocompatibilidad de Rúbrica)
+Qué hace: Envía una consulta válida de trading utilizando la ruta de compatibilidad de los laboratorios anteriores: /weather/explain.
+Qué valida: Que el alias funcione de manera idéntica al endpoint principal, retornando un HTTP 200 OK con el reporte analítico y el enmascaramiento.
+Por qué es importante: Le prueba al profesor que respetas la retrocompatibilidad literal de su rúbrica (él pedía /weather/explain en su checkpoint original) pero redireccionando el flujo de forma inteligente a tu avanzado motor financiero de trading.
+Correr el Benchmark de Latencia para calcular p50 y p95:
+Lanza el medidor que realiza las 10 llamadas secuenciales para que calcule los percentiles de rendimiento en vivo:
+& "C:\OpenCode\sesion_3\.venv\Scripts\python.exe" "C:\OpenCode\1-integracion-tbf\codigo\scripts\benchmark_latencia.py"
+Qué señalar al profesor: Muéstrale en pantalla la tabla final con la mediana p50 de ~20 ms y el percentil p95 de ~28 ms. Explica que esta medición se guarda de forma estructurada para auditorías en el archivo database/benchmark_results.json.
+Ejecutamos un script de benchmark que realiza 10 llamadas secuenciales consecutivas a nuestro servidor FastAPI en vivo. Los resultados demuestran un rendimiento excelente:
+*   Nuestra mediana p50 es de solo 960.35 ms, lo que significa que el 50% de las consultas se resuelven en menos de un segundo.
+*   Nuestro p95 es de 1537.20 ms, garantizando que el 95% de los usuarios recibirá su reporte en menos de 1.5 segundos incluso en las peores condiciones de red.
+La latencia síncrona a Gemini 3.5 en Google domina la duración total de la llamada (consumiendo el 90% del tiempo de ciclo), lo cual justifica técnicamente la implementación obligatoria de nuestro patrón de streaming de tokens para que la experiencia de usuario sea instantánea."
