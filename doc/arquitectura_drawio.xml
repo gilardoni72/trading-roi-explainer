@@ -1,0 +1,93 @@
+<mxfile host="Electron" modified="2026-09-15T00:00:00.000Z" agent="5.0" version="20.0.0" type="device">
+  <diagram id="trading-roi-architecture" name="Arquitectura">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="#0F172A" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- CLIENTE -->
+        <mxCell id="cli" value="CLIENTE REST / INTERFAZ CLI&lt;br/&gt;&lt;font color=&quot;#94A3B8&quot; style=&quot;font-size: 10px; font-weight: normal;&quot;&gt;Peticiones HTTP o Comando '--stream'&lt;/font&gt;" style="shape=rounded;whiteSpace=wrap;html=1;arcSize=10;fillColor=#1E293B;strokeColor=#475569;fontColor=#38BDF8;fontSize=12;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="440" y="40" width="220" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- CAPA 1: FASTAPI -->
+        <mxCell id="api1" value="CAPA 1: FASTAPI REST GATEWAY&lt;br/&gt;&lt;font color=&quot;#C7D2FE&quot; style=&quot;font-size: 10px; font-weight: normal;&quot;&gt;Autenticación X-API-Key / Latencia&lt;/font&gt;" style="shape=rounded;whiteSpace=wrap;html=1;arcSize=10;fillColor=#1E1B4B;strokeColor=#4F46E5;fontColor=#818CF8;fontSize=12;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="440" y="160" width="220" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- CAPA 3: ADAPTADOR -->
+        <mxCell id="api3" value="CAPA 3: TRADING ADAPTER&lt;br/&gt;&lt;font color=&quot;#A7F3D0&quot; style=&quot;font-size: 10px; font-weight: normal;&quot;&gt;PII Masking / ROI Calculations&lt;/font&gt;" style="shape=rounded;whiteSpace=wrap;html=1;arcSize=10;fillColor=#022C22;strokeColor=#059669;fontColor=#34D399;fontSize=12;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="440" y="280" width="220" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- CAPA 2: CONECTOR -->
+        <mxCell id="api2" value="CAPA 2: MARKET PRICE CONNECTOR&lt;br/&gt;&lt;font color=&quot;#FDE68A&quot; style=&quot;font-size: 10px; font-weight: normal;&quot;&gt;httpx / CoinGecko o Mock local&lt;/font&gt;" style="shape=rounded;whiteSpace=wrap;html=1;arcSize=10;fillColor=#1C1917;strokeColor=#D97706;fontColor=#F59E0B;fontSize=12;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="140" y="400" width="220" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- COINGECKO -->
+        <mxCell id="gecko" value="API Externa: CoinGecko" style="shape=cloud;whiteSpace=wrap;html=1;fillColor=#1F2937;strokeColor=#374151;fontColor=#9CA3AF;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="140" y="520" width="220" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- MOCK DB -->
+        <mxCell id="db" value="database/mock_db.json&lt;br/&gt;&lt;font color=&quot;#64748B&quot; style=&quot;font-size: 10px;&quot;&gt;Consistencia ACID Transaccional&lt;/font&gt;" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#0F172A;strokeColor=#64748B;fontColor=#94A3B8;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="440" y="510" width="220" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- CAPA 4: GEMINI -->
+        <mxCell id="gemini" value="CAPA 4: GEMINI 3.5 FLASH&lt;br/&gt;&lt;font color=&quot;#C7D2FE&quot; style=&quot;font-size: 10px; font-weight: normal;&quot;&gt;Generaciones &amp; Streaming&lt;/font&gt;" style="shape=rounded;whiteSpace=wrap;html=1;arcSize=10;fillColor=#1E1E38;strokeColor=#6366F1;fontColor=#818CF8;fontSize=12;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="740" y="400" width="220" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- OBSERVABILIDAD -->
+        <mxCell id="obs" value="OBSERVABILIDAD &amp; LLM OPS&lt;br/&gt;&lt;font color=&quot;#9CA3AF&quot; style=&quot;font-size: 10px; font-weight: normal;&quot;&gt;OTel Spans &amp; Langfuse Cloud&lt;/font&gt;" style="shape=rounded;whiteSpace=wrap;html=1;arcSize=10;fillColor=#111827;strokeColor=#4B5563;fontColor=#D1D5DB;fontSize=11;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="740" y="280" width="220" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- CONEXIONES -->
+        
+        <mxCell id="edge1" value="POST /trading/explain" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#475569;fontColor=#94A3B8;fontSize=10;endArrow=block;" edge="1" parent="1" source="cli" target="api1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="edge2" value="Parámetros tipados" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4F46E5;fontColor=#94A3B8;fontSize=10;endArrow=block;" edge="1" parent="1" source="api1" target="api3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="edge3" value="3. Solicita precio" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;fontColor=#94A3B8;fontSize=10;endArrow=block;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="api3" target="api2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="edge4" value="4. Consulta HTTP" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#D97706;fontColor=#94A3B8;fontSize=10;endArrow=block;" edge="1" parent="1" source="api2" target="gecko">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="edge5" value="5. Retorna precio" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#D97706;fontColor=#94A3B8;fontSize=10;endArrow=block;exitX=0.8;exitY=0.1;exitDx=0;exitDy=0;entryX=0.8;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="gecko" target="api2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="edge6" value="6. Precio actual" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;fontColor=#94A3B8;fontSize=10;endArrow=block;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="api2" target="api3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="edge7" value="7. Registro transacción" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;fontColor=#94A3B8;fontSize=10;endArrow=block;" edge="1" parent="1" source="api3" target="db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="edge8" value="8. Prompt Sanitizado" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;fontColor=#94A3B8;fontSize=10;endArrow=block;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="api3" target="gemini">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="edge9" value="9. Streaming de respuesta" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6366F1;fontColor=#94A3B8;fontSize=10;endArrow=block;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="gemini" target="cli">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="edge10" value="Métricas y trazas" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4B5563;fontColor=#94A3B8;fontSize=10;endArrow=block;" edge="1" parent="1" source="api3" target="obs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
