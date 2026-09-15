@@ -316,6 +316,46 @@ def compile_professional_guide():
     )
     pdf.multi_cell(0, 5, p4_desc)
     
+    # ==========================================
+    # PÁGINA 5: ANEXO A - CHECKPOINT 1
+    # ==========================================
+    pdf.add_page()
+    pdf.set_font("Helvetica", "B", 12)
+    pdf.set_text_color(30, 41, 59)
+    pdf.cell(0, 8, "Anexo A: Punto de Control - Seguridad y Claves (Captura)", 0, 1, "L")
+    pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+    pdf.ln(5)
+    
+    img1_path = "C:/OpenCode/1-integracion-tbf/Untitled.jpg"
+    if os.path.exists(img1_path):
+        # A4 es 210 de ancho, margen de 10 -> ancho disponible 190.
+        # Mantener proporcion original, alto aproximado 106.8.
+        pdf.image(img1_path, x=10, y=pdf.get_y(), w=190, h=106.8)
+        pdf.ln(112)
+        
+    pdf.set_font("Helvetica", "I", 9.5)
+    pdf.set_text_color(100, 116, 139)
+    pdf.multi_cell(0, 5, "Muestra las pautas dadas por el docente en clase para cerrar el endpoint, medir el p95 y sanitizar/enmascarar los nombres de los usuarios.")
+
+    # ==========================================
+    # PÁGINA 6: ANEXO B - CUESTIONARIO DE CIERRE
+    # ==========================================
+    pdf.add_page()
+    pdf.set_font("Helvetica", "B", 12)
+    pdf.set_text_color(30, 41, 59)
+    pdf.cell(0, 8, "Anexo B: Cuestionario de Cierre de la Sesion (Captura)", 0, 1, "L")
+    pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+    pdf.ln(5)
+    
+    img2_path = "C:/OpenCode/1-integracion-tbf/Untitled1.jpg"
+    if os.path.exists(img2_path):
+        pdf.image(img2_path, x=10, y=pdf.get_y(), w=190, h=106.8)
+        pdf.ln(112)
+        
+    pdf.set_font("Helvetica", "I", 9.5)
+    pdf.set_text_color(100, 116, 139)
+    pdf.multi_cell(0, 5, "Cuestionario oficial de cierre de clase con las preguntas de validacion sobre streaming de tokens, percentiles de latencia y throughput.")
+    
     # Escribir PDF final
     target_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "doc", "guia_demostracion.pdf")
     pdf.output(target_path)
