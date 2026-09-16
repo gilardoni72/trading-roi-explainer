@@ -1,5 +1,5 @@
 <mxfile host="Electron" modified="2026-09-15T00:00:00.000Z" agent="5.0" version="20.0.0" type="device">
-  <diagram id="trading-roi-architecture" name="Arquitectura">
+  <diagram id="trading-roi-architecture-enterprise" name="Arquitectura Enterprise">
     <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="#0F172A" math="0" shadow="0">
       <root>
         <mxCell id="0" />
@@ -30,9 +30,9 @@
           <mxGeometry x="140" y="520" width="220" height="60" as="geometry" />
         </mxCell>
         
-        <!-- MOCK DB -->
-        <mxCell id="db" value="database/mock_db.json&lt;br/&gt;&lt;font color=&quot;#64748B&quot; style=&quot;font-size: 10px;&quot;&gt;Consistencia ACID Transaccional&lt;/font&gt;" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#0F172A;strokeColor=#64748B;fontColor=#94A3B8;fontSize=11;align=center;" vertex="1" parent="1">
-          <mxGeometry x="440" y="510" width="220" height="80" as="geometry" />
+        <!-- MOCK DB CON REINTENTOS -->
+        <mxCell id="db" value="database/mock_db.json&lt;br/&gt;&lt;font color=&quot;#94A3B8&quot; style=&quot;font-size: 10px; font-weight: bold;&quot;&gt;Tenacity DB Retry Engine&lt;/font&gt;&lt;br/&gt;&lt;font color=&quot;#64748B&quot; style=&quot;font-size: 9px;&quot;&gt;5 intentos de escritura con Backoff / Auto-Sanacion&lt;/font&gt;" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#0F172A;strokeColor=#64748B;fontColor=#94A3B8;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="440" y="510" width="220" height="90" as="geometry" />
         </mxCell>
         
         <!-- CAPA 4: GEMINI -->
@@ -40,9 +40,14 @@
           <mxGeometry x="740" y="400" width="220" height="60" as="geometry" />
         </mxCell>
         
-        <!-- OBSERVABILIDAD -->
-        <mxCell id="obs" value="OBSERVABILIDAD &amp; LLM OPS&lt;br/&gt;&lt;font color=&quot;#9CA3AF&quot; style=&quot;font-size: 10px; font-weight: normal;&quot;&gt;OTel Spans &amp; Langfuse Cloud&lt;/font&gt;" style="shape=rounded;whiteSpace=wrap;html=1;arcSize=10;fillColor=#111827;strokeColor=#4B5563;fontColor=#D1D5DB;fontSize=11;fontStyle=1;align=center;" vertex="1" parent="1">
+        <!-- OBSERVABILIDAD TECNICA -->
+        <mxCell id="obs" value="OBSERVABILIDAD (OpenTelemetry)&lt;br/&gt;&lt;font color=&quot;#9CA3AF&quot; style=&quot;font-size: 10px; font-weight: normal;&quot;&gt;OTel Spans &amp; Correlacion Logs&lt;/font&gt;" style="shape=rounded;whiteSpace=wrap;html=1;arcSize=10;fillColor=#111827;strokeColor=#4B5563;fontColor=#D1D5DB;fontSize=11;fontStyle=1;align=center;" vertex="1" parent="1">
           <mxGeometry x="740" y="280" width="220" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- OBSERVABILIDAD DE IA (LANGFUSE) -->
+        <mxCell id="langfuse" value="LLM OPS (Langfuse Cloud)&lt;br/&gt;&lt;font color=&quot;#93C5FD&quot; style=&quot;font-size: 10px; font-weight: normal;&quot;&gt;Trazas, Costos, Tokens y 20-Item Datasets&lt;/font&gt;" style="shape=rounded;whiteSpace=wrap;html=1;arcSize=10;fillColor=#1E1B4B;strokeColor=#3B82F6;fontColor=#93C5FD;fontSize=11;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="740" y="160" width="220" height="60" as="geometry" />
         </mxCell>
         
         <!-- CONEXIONES -->
@@ -71,7 +76,7 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         
-        <mxCell id="edge7" value="7. Registro transacción" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;fontColor=#94A3B8;fontSize=10;endArrow=block;" edge="1" parent="1" source="api3" target="db">
+        <mxCell id="edge7" value="7. Escritura resiliente" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;fontColor=#94A3B8;fontSize=10;endArrow=block;" edge="1" parent="1" source="api3" target="db">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         
@@ -83,7 +88,11 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         
-        <mxCell id="edge10" value="Métricas y trazas" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4B5563;fontColor=#94A3B8;fontSize=10;endArrow=block;" edge="1" parent="1" source="api3" target="obs">
+        <mxCell id="edge10" value="Métricas de Spans" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4B5563;fontColor=#94A3B8;fontSize=10;endArrow=block;" edge="1" parent="1" source="api3" target="obs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="edge11" value="Trazas de LLM Ops" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#3B82F6;fontColor=#93C5FD;fontSize=10;endArrow=block;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="api3" target="langfuse">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         
