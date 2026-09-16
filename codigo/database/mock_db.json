@@ -88,5 +88,50 @@
         "is_demo": true,
         "db_write_attempts": 1,
         "db_write_status": "SUCCESS"
+    },
+    {
+        "user_id": "M**** G****",
+        "asset": "BTC",
+        "monto_invertido": 1500.0,
+        "precio_compra": 75636.0,
+        "cantidad_adquirida": 0.019733,
+        "comision_pagada": 7.5,
+        "precio_objetivo": 90763.2,
+        "valor_proyectado": 1791.0,
+        "retorno_usd": 291.0,
+        "roi_porcentaje": 19.4,
+        "is_demo": false,
+        "db_write_attempts": 1,
+        "db_write_status": "SUCCESS"
+    },
+    {
+        "user_id": "M**** G****",
+        "asset": "BTC",
+        "monto_invertido": 1500.0,
+        "precio_compra": 75652.0,
+        "cantidad_adquirida": 0.019728,
+        "comision_pagada": 7.5,
+        "precio_objetivo": 90782.4,
+        "valor_proyectado": 1791.0,
+        "retorno_usd": 291.0,
+        "roi_porcentaje": 19.4,
+        "is_demo": false,
+        "db_write_attempts": 1,
+        "db_write_status": "SUCCESS"
+    },
+    {
+        "user_id": "M**** G****",
+        "asset": "BTC",
+        "monto_invertido": 1500.0,
+        "precio_compra": 75652.0,
+        "cantidad_adquirida": 0.019728,
+        "comision_pagada": 7.5,
+        "precio_objetivo": 90782.4,
+        "valor_proyectado": 1791.0,
+        "retorno_usd": 291.0,
+        "roi_porcentaje": 19.4,
+        "is_demo": false,
+        "db_write_attempts": 1,
+        "db_write_status": "SUCCESS"
     }
 ]
