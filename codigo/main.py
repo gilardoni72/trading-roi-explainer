@@ -67,6 +67,10 @@ class TradingResponse(BaseModel):
     demo_mode: bool = Field(..., description="Indica si la peticion se ejecuto en modo de demostracion offline")
     db_write_attempts: int = Field(default=1, description="Numero de intentos de escritura realizados en la base de datos")
     db_write_status: str = Field(default="SUCCESS", description="Estado final de la persistencia de datos")
+    prompt_tokens: int = Field(default=0, description="Tokens de entrada consumidos por el prompt")
+    candidates_tokens: int = Field(default=0, description="Tokens de salida generados por el LLM")
+    total_tokens: int = Field(default=0, description="Total de tokens consumidos")
+    calculated_cost_usd: float = Field(default=0.0, description="Costo operativo calculado de la consulta en USD")
 
 # Instancia global del Agente de Finanzas (Inyeccion de Dependencia)
 agent_manager = FinancialAgentManager(
@@ -143,7 +147,11 @@ async def explain_trading_roi(request: TradingRequest):
             response=explanation,
             demo_mode=settings.DEMO_MODE,
             db_write_attempts=attempts,
-            db_write_status="SUCCESS"
+            db_write_status="SUCCESS",
+            prompt_tokens=agent_manager.last_prompt_tokens,
+            candidates_tokens=agent_manager.last_candidates_tokens,
+            total_tokens=agent_manager.last_total_tokens,
+            calculated_cost_usd=round(agent_manager.last_calculated_cost, 7)
         )
     except IOError as ioe:
         logger.error(f"Error de consistencia de base de datos: {str(ioe)}")
