@@ -1,0 +1,66 @@
+<mxfile host="Electron" modified="2026-09-15T23:23:44.446Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.6.4 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="C7nSQibhACjHor36ZAtr" version="24.6.4" type="device">
+  <diagram name="Page-1" id="kZ7aq7jY2pXVs_Uhj57H">
+    <mxGraphModel dx="1361" dy="798" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="13XWtLpmoZi0wVAWRxUs-1" value="CLIENTE REST / INTERFAZ CLI&lt;br/&gt;&lt;font color=&quot;#94A3B8&quot; style=&quot;font-size: 10px; font-weight: normal;&quot;&gt;Peticiones HTTP o Comando &#39;--stream&#39;&lt;/font&gt;" style="shape=rounded;whiteSpace=wrap;html=1;arcSize=10;fillColor=#1E293B;strokeColor=#475569;fontColor=#38BDF8;fontSize=12;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="350" y="70" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="13XWtLpmoZi0wVAWRxUs-2" value="CAPA 1: FASTAPI REST GATEWAY&lt;br/&gt;&lt;font color=&quot;#C7D2FE&quot; style=&quot;font-size: 10px; font-weight: normal;&quot;&gt;Autenticación X-API-Key / Latencia&lt;/font&gt;" style="shape=rounded;whiteSpace=wrap;html=1;arcSize=10;fillColor=#1E1B4B;strokeColor=#4F46E5;fontColor=#818CF8;fontSize=12;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="350" y="190" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="13XWtLpmoZi0wVAWRxUs-3" value="CAPA 3: TRADING ADAPTER&lt;br/&gt;&lt;font color=&quot;#A7F3D0&quot; style=&quot;font-size: 10px; font-weight: normal;&quot;&gt;PII Masking / ROI Calculations&lt;/font&gt;" style="shape=rounded;whiteSpace=wrap;html=1;arcSize=10;fillColor=#022C22;strokeColor=#059669;fontColor=#34D399;fontSize=12;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="350" y="310" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="13XWtLpmoZi0wVAWRxUs-4" value="CAPA 2: MARKET PRICE CONNECTOR&lt;br/&gt;&lt;font color=&quot;#FDE68A&quot; style=&quot;font-size: 10px; font-weight: normal;&quot;&gt;httpx / CoinGecko o Mock local&lt;/font&gt;" style="shape=rounded;whiteSpace=wrap;html=1;arcSize=10;fillColor=#1C1917;strokeColor=#D97706;fontColor=#F59E0B;fontSize=12;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="50" y="430" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="13XWtLpmoZi0wVAWRxUs-5" value="API Externa: CoinGecko" style="shape=cloud;whiteSpace=wrap;html=1;fillColor=#1F2937;strokeColor=#374151;fontColor=#9CA3AF;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="50" y="550" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="13XWtLpmoZi0wVAWRxUs-6" value="database/mock_db.json&lt;br/&gt;&lt;font color=&quot;#64748B&quot; style=&quot;font-size: 10px;&quot;&gt;Consistencia ACID Transaccional&lt;/font&gt;" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#0F172A;strokeColor=#64748B;fontColor=#94A3B8;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="350" y="540" width="220" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="13XWtLpmoZi0wVAWRxUs-7" value="CAPA 4: GEMINI 3.5 FLASH&lt;br/&gt;&lt;font color=&quot;#C7D2FE&quot; style=&quot;font-size: 10px; font-weight: normal;&quot;&gt;Generaciones &amp; Streaming&lt;/font&gt;" style="shape=rounded;whiteSpace=wrap;html=1;arcSize=10;fillColor=#1E1E38;strokeColor=#6366F1;fontColor=#818CF8;fontSize=12;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="650" y="430" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="13XWtLpmoZi0wVAWRxUs-8" value="OBSERVABILIDAD &amp; LLM OPS&lt;br/&gt;&lt;font color=&quot;#9CA3AF&quot; style=&quot;font-size: 10px; font-weight: normal;&quot;&gt;OTel Spans &amp; Langfuse Cloud&lt;/font&gt;" style="shape=rounded;whiteSpace=wrap;html=1;arcSize=10;fillColor=#111827;strokeColor=#4B5563;fontColor=#D1D5DB;fontSize=11;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="740" y="250" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="13XWtLpmoZi0wVAWRxUs-9" value="POST /trading/explain" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#475569;fontColor=#94A3B8;fontSize=10;endArrow=block;" edge="1" parent="1" source="13XWtLpmoZi0wVAWRxUs-1" target="13XWtLpmoZi0wVAWRxUs-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="13XWtLpmoZi0wVAWRxUs-10" value="Parámetros tipados" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4F46E5;fontColor=#94A3B8;fontSize=10;endArrow=block;" edge="1" parent="1" source="13XWtLpmoZi0wVAWRxUs-2" target="13XWtLpmoZi0wVAWRxUs-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="13XWtLpmoZi0wVAWRxUs-11" value="3. Solicita precio" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;fontColor=#94A3B8;fontSize=10;endArrow=block;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="13XWtLpmoZi0wVAWRxUs-3" target="13XWtLpmoZi0wVAWRxUs-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="13XWtLpmoZi0wVAWRxUs-12" value="4. Consulta HTTP" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#D97706;fontColor=#94A3B8;fontSize=10;endArrow=block;" edge="1" parent="1" source="13XWtLpmoZi0wVAWRxUs-4" target="13XWtLpmoZi0wVAWRxUs-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="13XWtLpmoZi0wVAWRxUs-13" value="5. Retorna precio" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#D97706;fontColor=#94A3B8;fontSize=10;endArrow=block;exitX=0.8;exitY=0.1;exitDx=0;exitDy=0;entryX=0.8;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="13XWtLpmoZi0wVAWRxUs-5" target="13XWtLpmoZi0wVAWRxUs-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="13XWtLpmoZi0wVAWRxUs-14" value="6. Precio actual" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;fontColor=#94A3B8;fontSize=10;endArrow=block;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="13XWtLpmoZi0wVAWRxUs-4" target="13XWtLpmoZi0wVAWRxUs-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="13XWtLpmoZi0wVAWRxUs-15" value="7. Registro transacción" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;fontColor=#94A3B8;fontSize=10;endArrow=block;" edge="1" parent="1" source="13XWtLpmoZi0wVAWRxUs-3" target="13XWtLpmoZi0wVAWRxUs-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="13XWtLpmoZi0wVAWRxUs-16" value="8. Prompt Sanitizado" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;fontColor=#94A3B8;fontSize=10;endArrow=block;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="13XWtLpmoZi0wVAWRxUs-3" target="13XWtLpmoZi0wVAWRxUs-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="13XWtLpmoZi0wVAWRxUs-17" value="9. Streaming de respuesta" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6366F1;fontColor=#94A3B8;fontSize=10;endArrow=block;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="13XWtLpmoZi0wVAWRxUs-7" target="13XWtLpmoZi0wVAWRxUs-1">
+          <mxGeometry x="-0.0968" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="13XWtLpmoZi0wVAWRxUs-18" value="Métricas y trazas" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4B5563;fontColor=#94A3B8;fontSize=10;endArrow=block;" edge="1" parent="1" source="13XWtLpmoZi0wVAWRxUs-3" target="13XWtLpmoZi0wVAWRxUs-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

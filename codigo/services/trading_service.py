@@ -7,8 +7,21 @@ from typing import Optional, Dict, Any
 from config import settings
 from opentelemetry import trace
 from observability import tracer
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
 logger = logging.getLogger(__name__)
+
+# Callback de Tenacity para imprimir en vivo en PowerShell por cada reintento fallido
+def log_after_db_attempt(retry_state):
+    try:
+        service_instance = retry_state.fn.__self__
+        service_instance.current_write_attempts = retry_state.attempt_number + 1
+    except Exception:
+        pass
+    logger.warning(
+        f"⚠️ [MECANISMO REINTENTOS] Intento de escritura #{retry_state.attempt_number} fallido en mock_db.json. "
+        f"Reintentando en {retry_state.next_action.sleep:.2f} segundos..."
+    )
 
 # --- Esquemas de Datos (Contracts) ---
 class AssetPrice(BaseModel):
@@ -29,10 +42,13 @@ class TransactionResult(BaseModel):
     retorno_usd: float
     roi_porcentaje: float
     is_demo: bool
+    db_write_attempts: int = Field(default=1, description="Número de intentos de escritura realizados")
+    db_write_status: str = Field(default="SUCCESS", description="Estado final de la persistencia")
 
 class TradingService:
     def __init__(self, demo_mode: bool = True):
         self.demo_mode = demo_mode
+        self.current_write_attempts = 1
         self.db_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "database", "mock_db.json")
         self.mock_prices = {
             "BTC": {"name": "Bitcoin", "price_usd": 65000.0},
@@ -219,22 +235,35 @@ class TradingService:
                 is_demo=self.demo_mode or price_data.is_demo
             )
             
-            # Registrar transaccion en db local
+            # Registrar transaccion en db local con mecanismo de reintento automatico (Tenacity)
+            self.current_write_attempts = 1
             try:
-                txs = []
-                if os.path.exists(self.db_path) and os.path.getsize(self.db_path) > 0:
-                    with open(self.db_path, "r") as f:
-                        try:
-                            txs = json.load(f)
-                        except json.JSONDecodeError:
-                            txs = []
-                txs.append(result.model_dump())
-                with open(self.db_path, "w") as f:
-                    json.dump(txs, f, indent=4)
+                self._save_to_json_file(result.model_dump())
+                result.db_write_attempts = self.current_write_attempts
+                result.db_write_status = "SUCCESS"
             except Exception as e:
-                logger.error(f"No se pudo guardar la transaccion: {str(e)}")
+                logger.error(f"No se pudo guardar la transaccion tras {self.current_write_attempts} intentos: {str(e)}")
                 span.record_exception(e)
                 span.set_status(trace.StatusCode.ERROR, description=str(e))
-                raise IOError(f"Error de consistencia de datos: No se pudo registrar la simulacion en base de datos. Motivo: {str(e)}")
+                raise IOError(f"Error de consistencia de datos: No se pudo registrar la simulacion en base de datos tras {self.current_write_attempts} intentos. Motivo: {str(e)}")
                 
             return result
+
+    @retry(
+        stop=stop_after_attempt(5),
+        wait=wait_exponential(multiplier=0.1, min=0.1, max=0.8),
+        after=log_after_db_attempt,
+        retry=retry_if_exception_type((IOError, PermissionError)),
+        reraise=True
+    )
+    def _save_to_json_file(self, result_dump):
+        txs = []
+        if os.path.exists(self.db_path) and os.path.getsize(self.db_path) > 0:
+            with open(self.db_path, "r") as f:
+                try:
+                    txs = json.load(f)
+                except json.JSONDecodeError:
+                    txs = []
+        txs.append(result_dump)
+        with open(self.db_path, "w") as f:
+            json.dump(txs, f, indent=4)

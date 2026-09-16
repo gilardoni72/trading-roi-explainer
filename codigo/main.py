@@ -65,6 +65,8 @@ class TradingRequest(BaseModel):
 class TradingResponse(BaseModel):
     response: str = Field(..., description="Explicacion y analisis detallado generado por el Agente LLM")
     demo_mode: bool = Field(..., description="Indica si la peticion se ejecuto en modo de demostracion offline")
+    db_write_attempts: int = Field(default=1, description="Numero de intentos de escritura realizados en la base de datos")
+    db_write_status: str = Field(default="SUCCESS", description="Estado final de la persistencia de datos")
 
 # Instancia global del Agente de Finanzas (Inyeccion de Dependencia)
 agent_manager = FinancialAgentManager(
@@ -135,9 +137,13 @@ async def explain_trading_roi(request: TradingRequest):
             user_name=request.user_name,
             user_query=request.message
         )
+        # Obtener dinamicamente la cantidad de intentos del adaptador SRE
+        attempts = agent_manager.trading_service.current_write_attempts
         return TradingResponse(
             response=explanation,
-            demo_mode=settings.DEMO_MODE
+            demo_mode=settings.DEMO_MODE,
+            db_write_attempts=attempts,
+            db_write_status="SUCCESS"
         )
     except IOError as ioe:
         logger.error(f"Error de consistencia de base de datos: {str(ioe)}")
