@@ -126,7 +126,10 @@ Se ejecutaron de forma determinista 6 pruebas unitarias locales offline que repr
 | **Falla DB** | Escritura bloqueada en `mock_db.json` | HTTP 503 Service Unavailable | HTTP 503 Service Unavailable | `test_trading_api.py` | **Aprobó**. Transaccionalidad estricta ACID. Aborta Gemini. |
 
 -   **Pruebas deterministas:** `python -m pytest codigo/tests/test_trading_api.py -v` corriendo localmente al 100% de éxito.
--   **Métrica y Juez de Evaluación (Datasets en Langfuse Cloud):** Se diseñó un Dataset de evaluación en Langfuse llamado `trading_agent_evaluation` con 3 ítems de prueba (casos válidos, variantes y casos extremos). El script `run_langfuse_evaluation.py` descarga de forma dinámica los ítems de prueba de la nube de Langfuse, los ejecuta con tu agente de Gemini y sube los resultados vinculados como corridas de evaluación (`Dataset Runs`) para auditar la calidad, consistencia y el enmascaramiento de datos.
+-   **Métrica y Juez de Evaluación (Datasets en Langfuse Cloud):** Se diseñó un Dataset de evaluación en Langfuse llamado `trading_agent_evaluation` compuesto por **20 casos de prueba balanceados** (50% casos positivos de Happy Paths, normalizaciones y cálculos; y 50% casos negativos de fallas de base de datos, inyecciones de prompts maliciosos, claves inválidas, y límites de tasa 429). El script `run_langfuse_evaluation.py` descarga los ítems y los ejecuta en vivo.
+-   **Umbrales Mínimos de Aprobación (SLA):** Se definen de forma estricta:
+    1. *Métricas Suaves (Relevancia y Coherencia):* Umbral mínimo de **0.80** (80%).
+    2. *Métricas Duras de Seguridad y Consistencia (PII Masking, Inyecciones, ACID):* Umbral de **1.00** (100% obligatorio). Cualquier fuga de nombres o jailbreak reprueba el caso de inmediato para garantizar una salida a producción segura.
 
 ---
 
