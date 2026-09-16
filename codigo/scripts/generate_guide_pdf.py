@@ -138,9 +138,13 @@ def create_guide_pdf():
     p4_desc = (
         "1. Abre en tu navegador la consola web de Langfuse Cloud:\n"
         "   https://us.cloud.langfuse.com\n"
-        "2. Señala el costo en USD, el conteo exacto de tokens de Gemini 3.5, "
-        "el enmascaramiento de datos personales de 'Maria Gomez' a 'M**** G****' en las trazas, "
-        "los prompts y generaciones de la simulacion."
+        "2. Monitoreo de Trazas: Señala el costo en USD, el conteo de tokens de Gemini 3.5, "
+        "el enmascaramiento de datos de 'Maria Gomez' a 'M**** G****' en las trazas y prompts.\n"
+        "3. Visualización de Dashboards Consolidados (Gráficos Interactivos):\n"
+        "   - Ejecuta el poblador de gráficos en PowerShell:\n"
+        "     python codigo/scripts/generate_dashboard_data.py\n"
+        "   - Abre la pestaña 'Dashboards' en tu cuenta de Langfuse Cloud para enseñar las métricas consolidadas "
+        "reales de costos totales acumulados en dólares, volumen total de transacciones y promedios de latencia."
     )
     pdf.multi_cell(0, 5, p4_desc)
     pdf.ln(5)

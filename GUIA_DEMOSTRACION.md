@@ -108,6 +108,7 @@ Demuestra el comportamiento estricto y consistente de transaccionalidad financie
 ## 📈 PASO 4: Observabilidad en la Nube con Langfuse (LLM Ops)
 Muestra el monitoreo en la nube para auditar costos, prompts y tokens en tiempo real.
 
+### 4.1 Monitoreo de Trazas Individuales
 *   **Cómo probarlo (En vivo):**
     1. Abre tu navegador de internet en **Langfuse Cloud**: 👉 **[us.cloud.langfuse.com](https://us.cloud.langfuse.com)** e inicia sesión.
     2. Realiza una simulación exitosa de inversión para el usuario `"Maria Gomez"`.
@@ -116,6 +117,21 @@ Muestra el monitoreo en la nube para auditar costos, prompts y tokens en tiempo 
     2. **Costos en USD:** Señala cómo Langfuse calcula de forma automática el costo en dólares de tu simulación con Gemini 3.5 (ejemplo: `$0.0002 USD`), demostrando control de presupuesto.
     3. **Enmascaramiento de Identidad:** Señala que el identificador registrado es **`M**** G****`**, demostrando que tus políticas de privacidad protegen los datos del usuario antes de subirlos a la nube.
     4. **Generaciones & Prompts:** Explica cómo la plataforma registra la llamada cognitiva, el prompt del sistema y la respuesta generada por el LLM.
+
+### 4.2 Visualización del Dashboard Consolidado (Gráficos y Métricas)
+Pobla tu panel web de forma masiva para enseñarle al profesor un panel consolidado activo y sumamente hermoso con múltiples datos transaccionales, costos acumulados y uso de modelos.
+*   **Comando para poblar el Dashboard en vivo (Ejecutar en PowerShell):**
+    ```powershell
+    & "C:\OpenCode\sesion_3\.venv\Scripts\python.exe" "C:\OpenCode\1-integracion-tbf\codigo\scripts\generate_dashboard_data.py"
+    ```
+*   **Qué señalar en vivo en el Dashboard de Langfuse:**
+    1. Abre la pestaña **"Dashboards"** o **"Home"** en el menú de la izquierda en Langfuse Cloud.
+    2. Enseña los hermosos gráficos interactivos auto-generados que consolidan tu uso de Gemini 3.5:
+        *   **Model Cost (Costos totales acumulados en dólares).**
+        *   **Total Traces Tracked (Volumen total de transacciones simuladas).**
+        *   **Model Usage (Distribución del consumo de tokens y llamadas por modelo).**
+        *   **Latency averages (Promedio e historia de latencia de tu API).**
+    3. *Esto le prueba de forma contundente al docente que tu sistema de integración está listo y diseñado para soportar auditorías ejecutivas de presupuestos y rendimiento de nivel corporativo.*
 
 ---
 
