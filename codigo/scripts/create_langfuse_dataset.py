@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 from langfuse import Langfuse
 
 # Forzar codificacion UTF-8 para evitar errores de consola en Windows con Emojis
@@ -22,6 +23,11 @@ def create_dataset():
         print("Por favor, configura LANGFUSE_PUBLIC_KEY y LANGFUSE_SECRET_KEY antes de continuar.")
         return
 
+    jsonl_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "tests", "casos_ejemplo_trading.jsonl")
+    if not os.path.exists(jsonl_path):
+        print(f"❌ Error: No se encontró el archivo de casos en: {jsonl_path}")
+        return
+
     langfuse = Langfuse()
     dataset_name = "trading_agent_evaluation"
     
@@ -30,41 +36,24 @@ def create_dataset():
         print(f"[Langfuse] Creando dataset '{dataset_name}' en la nube...")
         dataset = langfuse.create_dataset(
             name=dataset_name,
-            description="Dataset oficial para evaluar calidad, enmascaramiento y consistencia del Asesor de Trading (Marcelo Gilardoni)"
+            description="Dataset oficial de 20 casos de prueba para auditar calidad, enmascaramiento y consistencia (Marcelo Gilardoni)"
         )
         
-        # 2. Definir los ítems del dataset
-        test_cases = [
-            {
-                "input": {
-                    "user_name": "Maria Gomez",
-                    "message": "Tengo $1500 USD y quiero simular una inversion en BTC si sube a $80000"
-                },
-                "expected_output": "Debe dirigirse al usuario como 'M**** G****', deducir $7.50 USD de comisión (0.5%) y calcular un ROI de 1.36%."
-            },
-            {
-                "input": {
-                    "user_name": "Juan Perez",
-                    "message": "Tengo $500 usd para invertir en SOL si llega a $200"
-                },
-                "expected_output": "Debe dirigirse al usuario como 'J*** P****', deducir $2.50 USD de comisión (0.5%) y calcular la tenencia de SOL basada en $497.50 netos."
-            },
-            {
-                "input": {
-                    "user_name": "Carlos Ruiz",
-                    "message": "Quiero simular con ETH $1000 con meta de $4000"
-                },
-                "expected_output": "Debe dirigirse al usuario como 'C***** R***', deducir $5.00 USD de comisión (0.5%) y calcular el ROI correspondiente de Ethereum."
-            }
-        ]
+        # 2. Leer dinámicamente los 20 ítems del archivo .jsonl
+        print(f"[Langfuse] Leyendo casos de prueba desde: {jsonl_path}")
+        test_cases = []
+        with open(jsonl_path, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    test_cases.append(json.loads(line.strip()))
         
-        # 3. Subir los ítems al dataset
+        # 3. Subir los 20 ítems al dataset de Langfuse Cloud
         for i, case in enumerate(test_cases, 1):
-            print(f"[Langfuse] Subiendo caso de prueba #{i} (Usuario: {case['input']['user_name']})...")
+            print(f"[Langfuse] Subiendo caso de prueba #{i:02d} ({case['id']})...")
             dataset.create_item(
                 input=case["input"],
                 expected_output=case["expected_output"],
-                metadata={"id_caso": f"caso_prueba_{i}"}
+                metadata={"id_caso": case["id"]}
             )
             
         print("\n" + "=" * 70)
