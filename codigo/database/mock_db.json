@@ -163,5 +163,35 @@
         "is_demo": true,
         "db_write_attempts": 1,
         "db_write_status": "SUCCESS"
+    },
+    {
+        "user_id": "M**** G****",
+        "asset": "BTC",
+        "monto_invertido": 1500.0,
+        "precio_compra": 64973.29,
+        "cantidad_adquirida": 0.022971,
+        "comision_pagada": 7.5,
+        "precio_objetivo": 77967.95,
+        "valor_proyectado": 1791.0,
+        "retorno_usd": 291.0,
+        "roi_porcentaje": 19.4,
+        "is_demo": true,
+        "db_write_attempts": 1,
+        "db_write_status": "SUCCESS"
+    },
+    {
+        "user_id": "J*** P****",
+        "asset": "SOL",
+        "monto_invertido": 500.0,
+        "precio_compra": 151.34,
+        "cantidad_adquirida": 3.2873,
+        "comision_pagada": 2.5,
+        "precio_objetivo": 181.61,
+        "valor_proyectado": 597.0,
+        "retorno_usd": 97.0,
+        "roi_porcentaje": 19.4,
+        "is_demo": true,
+        "db_write_attempts": 1,
+        "db_write_status": "SUCCESS"
     }
 ]

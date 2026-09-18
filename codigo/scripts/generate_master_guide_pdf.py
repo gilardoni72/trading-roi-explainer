@@ -191,13 +191,13 @@ def compile_professional_guide():
     
     pdf.set_font("Helvetica", "B", 10.5)
     pdf.set_text_color(51, 65, 85)
-    pdf.cell(0, 5, "3.1 Verificacion de los Calculos Matematicos del Adaptador", 0, 1, "L")
+    pdf.cell(0, 5, "3.1 Verificacion de Calculos de El adaptador (traductor de datos al backend)", 0, 1, "L")
     pdf.ln(2)
     
     pdf.set_font("Helvetica", "", 10)
     pdf.set_text_color(75, 85, 99)
     calc_text = (
-        "El sistema no alucina datos financieros, ya que el adaptador los calcula localmente antes de entregarlos al LLM:\n"
+        "El sistema no alucina datos financieros, ya que El adaptador (traductor de datos al backend) los calcula localmente antes de entregarlos al LLM:\n"
         "- Deduccion de Comision (0.5%): Sobre un capital de $1,500.00 USD, calcula de forma exacta: $7.50 USD.\n"
         "- Monto Neto Destinado a Compra: Saldo liquido libre para inversion: $1,492.50 USD ($1,500.00 - $7.50).\n"
         "- Consulta de Mercado Real: El conector asincrono asocia el precio real de CoinGecko del instante de tu click.\n"

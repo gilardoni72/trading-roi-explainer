@@ -29,10 +29,10 @@ Muestra visualmente la gran diferencia en la experiencia de usuario (UX) entre e
     & "C:\OpenCode\sesion_3\.venv\Scripts\python.exe" "C:\OpenCode\1-integracion-tbf\codigo\scripts\demo_gemini_streaming.py" --stream
     ```
 *   **Qué señalar en vivo (Guión):**
-    1.  **Caja de Comprobación de Enmascaramiento:** Señala en la consola la sección `🔍 PROMPT DE SISTEMA Y DATOS SANITIZADOS`. Muestra que tu adaptador interceptó el nombre real del usuario `"Maria Gomez"` y lo enmascaró a `"M**** G****"` para resguardar su privacidad antes de enviarlo a los servidores de Google.
+    1.  **Caja de Comprobación de Enmascaramiento:** Señala en la consola la sección `🔍 PROMPT DE SISTEMA Y DATOS SANITIZADOS`. Muestra que El adaptador (traductor de datos al backend) interceptó el nombre real del usuario `"Maria Gomez"` y lo enmascaró a `"M**** G****"` para resguardar su privacidad antes de enviarlo a los servidores de Google.
     2.  **Mitigación de Inyecciones:** Señala que la consulta informal se ha limpiado, enviando al LLM únicamente variables numéricas frías y tipadas (`monto_usd=1500.0`, `precio_meta=80000.0`).
     3.  **Velocidad de Respuesta:** Muestra cómo los tokens (palabras) fluyen en la pantalla de inmediato (en menos de 1 segundo), dando una sensación interactiva idéntica a ChatGPT o Claude.
-    4.  **Cálculos del Adaptador:** Destaca la exactitud matemática del reporte: comisión del 0.5% deducida ($7.50 USD), cantidad neta comprada (0.019006 BTC) y ROI neto de 1.36%.
+    4.  **Cálculos de El adaptador (traductor de datos al backend):** Destaca la exactitud matemática del reporte: comisión del 0.5% deducida ($7.50 USD), cantidad neta comprada (0.019006 BTC) y ROI neto de 1.36%.
 
 ### 1.2 Ejecución SIN STREAMING (Comportamiento Síncrono Convencional)
 *   **Comando a ejecutar en tu terminal:**
