@@ -126,10 +126,10 @@ class FinancialAgentManager:
                     try:
                         trace_lf = self.langfuse.start_observation(
                             name="Simulacion de Trading",
-                            type="TRACE",
-                            user_id=tx.user_id,
+                            as_type="span",
                             input=user_query,
                             metadata={
+                                "user_id": tx.user_id,
                                 "asset": tx.asset,
                                 "monto_usd": tx.monto_invertido,
                                 "roi_porcentaje": tx.roi_porcentaje
@@ -137,8 +137,7 @@ class FinancialAgentManager:
                         )
                         generation_lf = self.langfuse.start_observation(
                             name="Explicacion Gemini 3.5",
-                            type="GENERATION",
-                            parent_id=trace_lf.id,
+                            as_type="generation",
                             model=self.model_name,
                             input=prompt_user
                         )
