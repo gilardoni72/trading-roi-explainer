@@ -57,24 +57,24 @@ Copia de la plantilla oficial adaptada al Trabajo Final de Integración para el 
 
 | Ejecución | Tiempo total | Primer texto, si hay streaming | Resultado o error |
 | :---: | :---: | :---: | :--- |
-| 1 | 1606.66 ms | No aplica (Síncrono local) | 200 OK |
-| 2 | 747.97 ms | No aplica (Síncrono local) | 200 OK |
-| 3 | 682.45 ms | No aplica (Síncrono local) | 200 OK |
-| 4 | 712.65 ms | No aplica (Síncrono local) | 200 OK |
-| 5 | 763.74 ms | No aplica (Síncrono local) | 200 OK |
-| 6 | 1026.32 ms | No aplica (Síncrono local) | 200 OK |
-| 7 | 1226.51 ms | No aplica (Síncrono local) | 200 OK |
-| 8 | 1452.31 ms | No aplica (Síncrono local) | 200 OK |
-| 9 | 894.37 ms | No aplica (Síncrono local) | 200 OK |
-| 10 | 1160.26 ms | No aplica (Síncrono local) | 200 OK |
+| 1 | 1283.71 ms | No aplica (Síncrono local) | 200 OK |
+| 2 | 989.15 ms | No aplica (Síncrono local) | 200 OK |
+| 3 | 680.86 ms | No aplica (Síncrono local) | 200 OK |
+| 4 | 661.21 ms | No aplica (Síncrono local) | 200 OK |
+| 5 | 671.90 ms | No aplica (Síncrono local) | 200 OK |
+| 6 | 916.76 ms | No aplica (Síncrono local) | 200 OK |
+| 7 | 1058.19 ms | No aplica (Síncrono local) | 200 OK |
+| 8 | 888.68 ms | No aplica (Síncrono local) | 200 OK |
+| 9 | 1013.86 ms | No aplica (Síncrono local) | 200 OK |
+| 10 | 838.46 ms | No aplica (Síncrono local) | 200 OK |
 
 **Métricas del Servidor Local:**
-*   **Latencia Mínima:** **682.45 ms**
-*   **Latencia Máxima:** **1606.66 ms**
-*   **Latencia Promedio:** **1027.32 ms**
-*   **Percentil p50 (Mediana):** **960.35 ms**
-*   **Percentil p95 (Peor caso 5%):** **1537.20 ms**
-*   **Latencia de Gemini 3.5 Real:** Promedio de **1.02s** (modo síncrono completo) versus latencia percibida en modo streaming de **menos de 1 segundo** (tokens en vivo).
+*   **Latencia Mínima:** **661.21 ms**
+*   **Latencia Máxima:** **1283.71 ms**
+*   **Latencia Promedio:** **900.28 ms**
+*   **Percentil p50 (Mediana):** **902.72 ms**
+*   **Percentil p95 (Peor caso 5%):** **1182.22 ms**
+*   **Latencia de Gemini 3.5 Real:** Promedio de **900.28 ms** (modo síncrono completo) versus latencia percibida en modo streaming de **menos de 1 segundo** (tokens en vivo).
 
 **Conclusión de la medición:** Los algoritmos de cálculo, autenticación, base de datos local y masking corren de forma instantánea. La latencia síncrona a Gemini 3.5 de Google domina el tiempo de espera, lo que justifica la implementación de **Streaming** para que el usuario reciba tokens de inmediato.
 
