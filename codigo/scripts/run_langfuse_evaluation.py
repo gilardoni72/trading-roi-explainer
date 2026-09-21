@@ -1,7 +1,12 @@
 import asyncio
 import os
 import sys
+import json
+import nest_asyncio
 from langfuse import Langfuse
+
+# Permitir bucles de eventos anidados para evitar conflictos con nest_asyncio en entornos interactivos
+nest_asyncio.apply()
 
 # Forzar codificacion UTF-8 para evitar errores de consola en Windows con Emojis
 if hasattr(sys.stdout, 'reconfigure'):
@@ -13,7 +18,36 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import settings
 from agents.financial_agent import FinancialAgentManager
 
-async def run_evaluation():
+# Instanciar el agente de IA (Gemini 3.5)
+manager = FinancialAgentManager(
+    api_key=settings.GEMINI_API_KEY,
+    model_name=settings.GEMINI_MODEL,
+    demo_mode=False
+)
+
+async def evaluate_item(*, item, **kwargs):
+    """
+    Función de tarea asíncrona nativa para procesar cada ítem del dataset.
+    """
+    user_name = item.input["user_name"]
+    user_query = item.input["message"]
+    
+    print(f"\n[Evaluando] ID: {item.id} | Usuario: {user_name}...")
+    print(f"Consulta: '{user_query}'")
+    
+    try:
+        response_text = await manager.run_query(
+            user_name=user_name,
+            user_query=user_query,
+            stream=False
+        )
+        print("✅ Simulación completada con éxito.")
+        return response_text
+    except Exception as e:
+        print(f"❌ Error procesando ítem: {str(e)}")
+        return f"Error: {str(e)}"
+
+async def run_evaluation_async():
     print("=" * 70)
     print("🚀 INICIANDO CORRIDA DE EVALUACIÓN SOBRE EL DATASET EN LANGFUSE CLOUD")
     print("=" * 70)
@@ -32,58 +66,16 @@ async def run_evaluation():
         print(f"[Langfuse] Descargando dataset '{dataset_name}' de la nube...")
         dataset = langfuse.get_dataset(dataset_name)
         
-        # 2. Inicializar el agente de IA (Gemini 3.5)
-        manager = FinancialAgentManager(
-            api_key=settings.GEMINI_API_KEY,
-            model_name=settings.GEMINI_MODEL,
-            demo_mode=False
+        # 2. Correr la evaluación de forma nativa utilizando 'run_experiment' de Langfuse
+        # Esto crea automáticamente las trazas, las asocia al dataset y las sube a la nube.
+        print(f"[Langfuse] Iniciando experimento asíncrono con {len(dataset.items)} casos de prueba...")
+        results = dataset.run_experiment(
+            name="Evaluacion_Gemini3.5_Flash",
+            run_name="Run_Marcelo_Gilardoni",
+            task=evaluate_item
         )
         
-        # 3. Iterar sobre cada caso de prueba del dataset
-        for i, item in enumerate(dataset.items, 1):
-            id_caso = item.metadata.get("id_caso", f"caso_{i}")
-            user_name = item.input["user_name"]
-            user_query = item.input["message"]
-            
-            print(f"\n[Fase 1/3] Procesando {id_caso} | Usuario: {user_name}...")
-            print(f"Consulta: '{user_query}'")
-            
-            # 1. Crear traza en Langfuse para esta corrida de evaluación
-            trace = langfuse.trace(
-                name="Evaluacion_Gemini3.5_Flash",
-                input=user_query,
-                metadata={"id_caso": id_caso}
-            )
-            
-            # 2. Registrar el inicio de la generación de IA
-            generation = trace.generation(
-                name="Evaluacion_LLM_Output",
-                model=settings.GEMINI_MODEL,
-                input=user_query
-            )
-            
-            # 3. Ejecutar la llamada real cognitiva a tu Gemini 3.5
-            print(f"[Fase 2/3] Enviando consulta sanitizada a Gemini 3.5...")
-            response_text = await manager.run_query(
-                user_name=user_name,
-                user_query=user_query,
-                stream=False
-            )
-            
-            # 4. Registrar la finalización del Span de generación con el texto retornado
-            generation.end(output=response_text)
-            
-            # 5. Vincular formalmente la traza generada con el ítem del dataset de Langfuse Cloud
-            print(f"[Fase 3/3] Vinculando traza con el Dataset Item en la nube...")
-            langfuse.create_dataset_run_item(
-                dataset_item_id=item.id,
-                trace_id=trace.id,
-                run_name="Evaluacion_Gemini3.5_Flash"
-            )
-            
-            print(f"✅ Caso {id_caso} completado y guardado con éxito.")
-                
-        # Forzar el flush de todas las trazas de evaluacion antes de salir de la consola
+        # 3. Forzar el flush de todas las trazas de evaluacion antes de salir
         print("[Langfuse] Sincronizando y subiendo trazas pendientes a la nube...")
         langfuse.flush()
                 
@@ -97,5 +89,8 @@ async def run_evaluation():
         print(f"\n❌ Error al correr la evaluación del Dataset: {str(e)}")
         print("=" * 70)
 
+def main():
+    asyncio.run(run_evaluation_async())
+
 if __name__ == "__main__":
-    asyncio.run(run_evaluation())
+    main()

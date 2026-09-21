@@ -171,7 +171,8 @@ class FinancialAgentManager:
                     
                     if generation_lf:
                         try:
-                            generation_lf.end(output=full_text)
+                            generation_lf.update(output=full_text)
+                            generation_lf.end()
                             if trace_lf:
                                 trace_lf.end()
                         except Exception:
@@ -197,7 +198,8 @@ class FinancialAgentManager:
 
                     if generation_lf:
                         try:
-                            generation_lf.end(output=res_text)
+                            generation_lf.update(output=res_text)
+                            generation_lf.end()
                             if trace_lf:
                                 trace_lf.end()
                         except Exception:
@@ -221,7 +223,8 @@ class FinancialAgentManager:
                 # Cerrar traza en Langfuse registrando el error de forma limpia
                 if generation_lf:
                     try:
-                        generation_lf.end(output=f"Error API Google (Fallback Activado): {str(e)}\n\nResultado simulado:\n{fallback_text}", status_message="FAILED")
+                        generation_lf.update(output=f"Error API Google (Fallback Activado): {str(e)}\n\nResultado simulado:\n{fallback_text}", status_message="FAILED")
+                        generation_lf.end()
                         if trace_lf:
                             trace_lf.end()
                     except Exception:
