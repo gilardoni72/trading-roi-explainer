@@ -77,6 +77,56 @@ class FinancialAgentManager:
                 precio_objetivo=params["target"]
             )
 
+            # Configurar prompt con instrucciones de sistema rigurosas
+            system_prompt = (
+                "Eres un asesor financiero experto en criptoactivos y trading algorítmico.\n"
+                "Tu objetivo es explicar los cálculos de ROI, comisiones de trading y proyecciones de una simulación de forma muy analítica y amigable en español.\n\n"
+                "REGLAS DE SEGURIDAD Y PRIVACIDAD:\n"
+                "1. NUNCA expongas datos de identificación personal (PII) del usuario. Dirígete a él utilizando únicamente su identificador enmascarado proporcionado.\n"
+                "2. Presenta los cálculos de comisiones (0.5%), cantidad adquirida, valor proyectado, ganancias y ROI porcentual de forma clara.\n"
+                "3. Concluye con recomendaciones profesionales de control de riesgo (ej: stop-loss, diversificación).\n"
+            )
+
+            prompt_user = (
+                f"Consulta del usuario: {user_query}\n\n"
+                f"Datos procesados del Adaptador Financiero:\n"
+                f"- Identificador de Usuario Enmascarado: {tx.user_id}\n"
+                f"- Activo: {tx.asset}\n"
+                f"- Monto Invertido original: ${tx.monto_invertido:,.2f} USD\n"
+                f"- Comisión Cobrada (0.5%): ${tx.comision_pagada:,.2f} USD\n"
+                f"- Precio de Compra Actual: ${tx.precio_compra:,.2f} USD\n"
+                f"- Cantidad Adquirida: {tx.cantidad_adquirida:.6f} {tx.asset}\n"
+                f"- Precio Objetivo de Venta: ${tx.precio_objetivo:,.2f} USD\n"
+                f"- Valor Proyectado Final: ${tx.valor_proyectado:,.2f} USD\n"
+                f"- Ganancia Neta Estimada: ${tx.retorno_usd:,.2f} USD\n"
+                f"- Retorno de Inversión (ROI): {tx.roi_porcentaje:.2f}%\n"
+            )
+
+            # Inicializar traza en Langfuse si esta habilitado de forma segura (Iniciado Temprano para Resiliencia)
+            trace_lf = None
+            generation_lf = None
+            if self.langfuse:
+                try:
+                    trace_lf = self.langfuse.start_observation(
+                        name="Simulacion de Trading",
+                        as_type="span",
+                        input=user_query,
+                        metadata={
+                            "user_id": tx.user_id,
+                            "asset": tx.asset,
+                            "monto_usd": tx.monto_invertido,
+                            "roi_porcentaje": tx.roi_porcentaje
+                        }
+                    )
+                    generation_lf = self.langfuse.start_observation(
+                        name="Explicacion Gemini 3.5",
+                        as_type="generation",
+                        model=self.model_name,
+                        input=prompt_user
+                    )
+                except Exception as lf_err:
+                    logger.warning(f"Error registrando inicio de traza en Langfuse: {str(lf_err)}")
+
             if self.demo_mode or not self.api_key or "placeholder" in self.api_key:
                 span.set_attribute("gemini.demo_fallback", True)
                 # Asignar defaults para el modo demo
@@ -84,65 +134,26 @@ class FinancialAgentManager:
                 self.last_candidates_tokens = 600
                 self.last_total_tokens = 1100
                 self.last_calculated_cost = 0.0002175
-                return self._generate_mock_explanation(user_query, tx)
+                
+                fallback_text = self._generate_mock_explanation(user_query, tx)
+                
+                # Cerrar traza en Langfuse para el modo demo offline
+                if generation_lf:
+                    try:
+                        generation_lf.end(output=fallback_text)
+                        if trace_lf:
+                            trace_lf.end()
+                    except Exception:
+                        pass
+                return fallback_text
 
             # --- CONEXIÓN REAL CON GOOGLE GEMINI 3.5 ---
             try:
-                # Configurar prompt con instrucciones de sistema rigurosas
-                system_prompt = (
-                    "Eres un asesor financiero experto en criptoactivos y trading algorítmico.\n"
-                    "Tu objetivo es explicar los cálculos de ROI, comisiones de trading y proyecciones de una simulación de forma muy analítica y amigable en español.\n\n"
-                    "REGLAS DE SEGURIDAD Y PRIVACIDAD:\n"
-                    "1. NUNCA expongas datos de identificación personal (PII) del usuario. Dirígete a él utilizando únicamente su identificador enmascarado proporcionado.\n"
-                    "2. Presenta los cálculos de comisiones (0.5%), cantidad adquirida, valor proyectado, ganancias y ROI porcentual de forma clara.\n"
-                    "3. Concluye con recomendaciones profesionales de control de riesgo (ej: stop-loss, diversificación).\n"
-                )
-
-                prompt_user = (
-                    f"Consulta del usuario: {user_query}\n\n"
-                    f"Datos procesados del Adaptador Financiero:\n"
-                    f"- Identificador de Usuario Enmascarado: {tx.user_id}\n"
-                    f"- Activo: {tx.asset}\n"
-                    f"- Monto Invertido original: ${tx.monto_invertido:,.2f} USD\n"
-                    f"- Comisión Cobrada (0.5%): ${tx.comision_pagada:,.2f} USD\n"
-                    f"- Precio de Compra Actual: ${tx.precio_compra:,.2f} USD\n"
-                    f"- Cantidad Adquirida: {tx.cantidad_adquirida:.6f} {tx.asset}\n"
-                    f"- Precio Objetivo de Venta: ${tx.precio_objetivo:,.2f} USD\n"
-                    f"- Valor Proyectado Final: ${tx.valor_proyectado:,.2f} USD\n"
-                    f"- Ganancia Neta Estimada: ${tx.retorno_usd:,.2f} USD\n"
-                    f"- Retorno de Inversión (ROI): {tx.roi_porcentaje:.2f}%\n"
-                )
-
                 # Inicializar modelo de Gemini
                 model = genai.GenerativeModel(
                     model_name=self.model_name,
                     system_instruction=system_prompt
                 )
-
-                # Inicializar traza en Langfuse si esta habilitado de forma segura
-                trace_lf = None
-                generation_lf = None
-                if self.langfuse:
-                    try:
-                        trace_lf = self.langfuse.start_observation(
-                            name="Simulacion de Trading",
-                            as_type="span",
-                            input=user_query,
-                            metadata={
-                                "user_id": tx.user_id,
-                                "asset": tx.asset,
-                                "monto_usd": tx.monto_invertido,
-                                "roi_porcentaje": tx.roi_porcentaje
-                            }
-                        )
-                        generation_lf = self.langfuse.start_observation(
-                            name="Explicacion Gemini 3.5",
-                            as_type="generation",
-                            model=self.model_name,
-                            input=prompt_user
-                        )
-                    except Exception as lf_err:
-                        logger.warning(f"Error registrando inicio de traza en Langfuse: {str(lf_err)}")
 
                 # Controlar modo streaming o no streaming
                 if stream:
@@ -200,13 +211,20 @@ class FinancialAgentManager:
                 self.last_total_tokens = 1100
                 self.last_calculated_cost = 0.0002175
                 
-                if 'generation_lf' in locals() and generation_lf:
-                    try:
-                        generation_lf.end(output=f"Error: {str(e)}", status_message="FAILED")
-                    except Exception:
-                        pass
                 logger.error(f"Error llamando a Gemini Real: {str(e)}. Fallback a mock.")
                 span.set_status(trace.StatusCode.ERROR, description=str(e))
                 span.record_exception(e)
                 span.set_attribute("gemini.demo_fallback", True)
-                return self._generate_mock_explanation(user_query, tx)
+                
+                fallback_text = self._generate_mock_explanation(user_query, tx)
+                
+                # Cerrar traza en Langfuse registrando el error de forma limpia
+                if generation_lf:
+                    try:
+                        generation_lf.end(output=f"Error API Google (Fallback Activado): {str(e)}\n\nResultado simulado:\n{fallback_text}", status_message="FAILED")
+                        if trace_lf:
+                            trace_lf.end()
+                    except Exception:
+                        pass
+                        
+                return fallback_text

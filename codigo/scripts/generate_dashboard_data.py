@@ -77,6 +77,11 @@ async def generate_dashboard_data():
             print(f"⚠️ Error en simulacion #{i}: {str(e)}")
             await asyncio.sleep(2.0)
             
+    # Forzar flush de Langfuse al final de todas las transacciones para asegurar la subida
+    if manager.langfuse:
+        print("[Langfuse] Sincronizando y subiendo trazas pendientes a la nube...")
+        manager.langfuse.flush()
+
     print("\n" + "=" * 70)
     print("🎉 ¡DASHBOARD POBLADO EXITOSAMENTE CON DATOS REALES!")
     print("Ingresa a us.cloud.langfuse.com y haz clic en 'Dashboards' o 'Tracing' para ver")

@@ -83,6 +83,10 @@ async def run_evaluation():
             
             print(f"✅ Caso {id_caso} completado y guardado con éxito.")
                 
+        # Forzar el flush de todas las trazas de evaluacion antes de salir de la consola
+        print("[Langfuse] Sincronizando y subiendo trazas pendientes a la nube...")
+        langfuse.flush()
+                
         print("\n" + "=" * 70)
         print("🎉 ¡Corrida de evaluación de Dataset completada exitosamente!")
         print("Revisa los reportes, comparativas y scores ingresando a:")
