@@ -50,7 +50,8 @@ def create_dataset():
         # 3. Subir los 20 ítems al dataset de Langfuse Cloud
         for i, case in enumerate(test_cases, 1):
             print(f"[Langfuse] Subiendo caso de prueba #{i:02d} ({case['id']})...")
-            dataset.create_item(
+            langfuse.create_dataset_item(
+                dataset_name=dataset_name,
                 input=case["input"],
                 expected_output=case["expected_output"],
                 metadata={"id_caso": case["id"]}

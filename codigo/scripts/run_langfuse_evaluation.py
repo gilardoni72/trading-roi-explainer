@@ -48,30 +48,40 @@ async def run_evaluation():
             print(f"\n[Fase 1/3] Procesando {id_caso} | Usuario: {user_name}...")
             print(f"Consulta: '{user_query}'")
             
-            # Iniciar traza observada vinculada al ítem del dataset de Langfuse
-            with item.observe(
-                run_name="Evaluacion_Gemini3.5_Flash",
-                metadata={"model": settings.GEMINI_MODEL}
-            ) as trace:
-                
-                # Ejecutar consulta real a Gemini 3.5
-                print(f"[Fase 2/3] Enviando consulta sanitizada a Gemini 3.5...")
-                response_text = await manager.run_query(
-                    user_name=user_name,
-                    user_query=user_query,
-                    stream=False
-                )
-                
-                # Registrar la salida cognitiva de la generación de la evaluación
-                print(f"[Fase 3/3] Registrando resultado en la nube de Langfuse...")
-                trace.generation(
-                    name="Evaluacion_LLM_Output",
-                    model=settings.GEMINI_MODEL,
-                    input=user_query,
-                    output=response_text
-                )
-                
-                print(f"✅ Caso {id_caso} completado y guardado con éxito.")
+            # 1. Crear traza en Langfuse para esta corrida de evaluación
+            trace = langfuse.trace(
+                name="Evaluacion_Gemini3.5_Flash",
+                input=user_query,
+                metadata={"id_caso": id_caso}
+            )
+            
+            # 2. Registrar el inicio de la generación de IA
+            generation = trace.generation(
+                name="Evaluacion_LLM_Output",
+                model=settings.GEMINI_MODEL,
+                input=user_query
+            )
+            
+            # 3. Ejecutar la llamada real cognitiva a tu Gemini 3.5
+            print(f"[Fase 2/3] Enviando consulta sanitizada a Gemini 3.5...")
+            response_text = await manager.run_query(
+                user_name=user_name,
+                user_query=user_query,
+                stream=False
+            )
+            
+            # 4. Registrar la finalización del Span de generación con el texto retornado
+            generation.end(output=response_text)
+            
+            # 5. Vincular formalmente la traza generada con el ítem del dataset de Langfuse Cloud
+            print(f"[Fase 3/3] Vinculando traza con el Dataset Item en la nube...")
+            langfuse.create_dataset_run_item(
+                dataset_item_id=item.id,
+                trace_id=trace.id,
+                run_name="Evaluacion_Gemini3.5_Flash"
+            )
+            
+            print(f"✅ Caso {id_caso} completado y guardado con éxito.")
                 
         print("\n" + "=" * 70)
         print("🎉 ¡Corrida de evaluación de Dataset completada exitosamente!")

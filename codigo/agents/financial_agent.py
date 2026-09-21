@@ -124,8 +124,9 @@ class FinancialAgentManager:
                 generation_lf = None
                 if self.langfuse:
                     try:
-                        trace_lf = self.langfuse.trace(
+                        trace_lf = self.langfuse.start_observation(
                             name="Simulacion de Trading",
+                            type="TRACE",
                             user_id=tx.user_id,
                             input=user_query,
                             metadata={
@@ -134,10 +135,11 @@ class FinancialAgentManager:
                                 "roi_porcentaje": tx.roi_porcentaje
                             }
                         )
-                        generation_lf = trace_lf.generation(
+                        generation_lf = self.langfuse.start_observation(
                             name="Explicacion Gemini 3.5",
+                            type="GENERATION",
+                            parent_id=trace_lf.id,
                             model=self.model_name,
-                            model_parameters={"temperature": 0.3},
                             input=prompt_user
                         )
                     except Exception as lf_err:
@@ -160,6 +162,8 @@ class FinancialAgentManager:
                     if generation_lf:
                         try:
                             generation_lf.end(output=full_text)
+                            if trace_lf:
+                                trace_lf.end()
                         except Exception:
                             pass
                     return full_text
@@ -184,6 +188,8 @@ class FinancialAgentManager:
                     if generation_lf:
                         try:
                             generation_lf.end(output=res_text)
+                            if trace_lf:
+                                trace_lf.end()
                         except Exception:
                             pass
                     return res_text
