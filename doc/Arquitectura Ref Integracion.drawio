@@ -1,4 +1,4 @@
-<mxfile host="Electron" modified="2026-09-16T02:12:31.912Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.6.4 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="a3FXUzYmnDnswSNN-W_B" version="24.6.4" type="device">
+<mxfile host="Electron" modified="2026-09-22T21:03:08.394Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.6.4 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="WT13NA6KYgu4OOUcmQA2" version="24.6.4" type="device">
   <diagram name="Page-1" id="kZ7aq7jY2pXVs_Uhj57H">
     <mxGraphModel dx="2211" dy="798" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -104,7 +104,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="13XWtLpmoZi0wVAWRxUs-33" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="100" y="700" width="800" height="70" as="geometry" />
+          <mxGeometry x="100" y="700" width="800" height="90" as="geometry" />
         </mxCell>
         <mxCell id="13XWtLpmoZi0wVAWRxUs-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="13XWtLpmoZi0wVAWRxUs-36" target="13XWtLpmoZi0wVAWRxUs-8" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -118,14 +118,17 @@
         <mxCell id="13XWtLpmoZi0wVAWRxUs-40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="13XWtLpmoZi0wVAWRxUs-38" target="13XWtLpmoZi0wVAWRxUs-7" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="4oc1KlLr-sKfeYsheZ4e-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="4oc1KlLr-sKfeYsheZ4e-1" target="13XWtLpmoZi0wVAWRxUs-3">
+        <mxCell id="4oc1KlLr-sKfeYsheZ4e-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" parent="1" source="4oc1KlLr-sKfeYsheZ4e-1" target="13XWtLpmoZi0wVAWRxUs-3" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="4oc1KlLr-sKfeYsheZ4e-1" value="LLM OPS (Langfuse Cloud)&lt;br/&gt;&lt;font color=&quot;#93C5FD&quot; style=&quot;font-size: 10px; font-weight: normal;&quot;&gt;Trazas, Costos, Tokens y 20-Item Datasets&lt;/font&gt;" style="shape=rounded;whiteSpace=wrap;html=1;arcSize=10;fillColor=#1E1B4B;strokeColor=#3B82F6;fontColor=#93C5FD;fontSize=11;fontStyle=1;align=center;" vertex="1" parent="1">
+        <mxCell id="4oc1KlLr-sKfeYsheZ4e-1" value="LLM OPS (Langfuse Cloud)&lt;br/&gt;&lt;font color=&quot;#93C5FD&quot; style=&quot;font-size: 10px; font-weight: normal;&quot;&gt;Trazas, Costos, Tokens y 20-Item Datasets&lt;/font&gt;" style="shape=rounded;whiteSpace=wrap;html=1;arcSize=10;fillColor=#1E1B4B;strokeColor=#3B82F6;fontColor=#93C5FD;fontSize=11;fontStyle=1;align=center;" parent="1" vertex="1">
           <mxGeometry x="800" y="270" width="220" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="4oc1KlLr-sKfeYsheZ4e-3" value="&lt;span style=&quot;color: rgb(147, 197, 253); font-size: 10px; background-color: rgb(255, 255, 255);&quot;&gt;Trazas de LLM Ops&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+        <mxCell id="4oc1KlLr-sKfeYsheZ4e-3" value="&lt;span style=&quot;color: rgb(147, 197, 253); font-size: 10px; background-color: rgb(255, 255, 255);&quot;&gt;Trazas de LLM Ops&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="640" y="290" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TZH9P3MqAWGI4hQpy0a4-1" value="Trazabilidad y observabilidad:" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="850" y="410" width="180" height="30" as="geometry" />
         </mxCell>
         <mxCell id="13XWtLpmoZi0wVAWRxUs-24" value="capa1" parent="0" />
         <mxCell id="13XWtLpmoZi0wVAWRxUs-22" value="&lt;div&gt;- El adaptador de negocio que procesa las reglas operacionales.&lt;/div&gt;&lt;div&gt;- Responsabilidad:&lt;/div&gt;&lt;div&gt;1. Privacidad: Ejecuta la función mask_user_data() para enmascarar de inmediato el nombre en claro (Maria Gomez $\rightarrow$ M**** G****),&lt;/div&gt;&lt;div&gt;&amp;nbsp;resguardándolo localmente antes de enviarlo a la nube pública.&lt;span style=&quot;background-color: initial;&quot;&gt;2. Seguridad contra Inyecciones: Limpia el mensaje de texto libre y&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;extrae de forma estricta únicamente las variables numéricas de trading.&lt;/span&gt;&lt;/div&gt;&lt;div&gt;3. Lógica Cuantitativa: Deduce de forma exacta la comisión (0.5%),&amp;nbsp;&lt;/div&gt;&lt;div&gt;calcula el saldo neto de compra, la cantidad de criptoactivo y el ROI neto (%) real. Esto evita que el LLM alucine números.&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="13XWtLpmoZi0wVAWRxUs-24" vertex="1">
