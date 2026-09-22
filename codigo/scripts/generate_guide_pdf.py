@@ -161,9 +161,15 @@ def create_guide_pdf():
     p5_desc = (
         "1. Crear el Dataset 'trading_agent_evaluation' en la nube:\n"
         "   python codigo/scripts/create_langfuse_dataset.py\n"
-        "2. Correr la evaluacion en vivo de los 3 casos de prueba con Gemini:\n"
+        "2. Correr la evaluacion en vivo de los 20 casos de prueba con Gemini:\n"
         "   python codigo/scripts/run_langfuse_evaluation.py\n"
-        "3. En la consola de Langfuse, muestra la pestaña 'Runs' con la comparativa lado a lado."
+        "3. En la consola de Langfuse, muestra la pestaña 'Runs' con la comparativa lado a lado.\n"
+        "4. ¿Cómo funciona el Juez Cognitivo de DeepEval (Juez Gemini)?\n"
+        "   - Opera bajo el estándar 'LLM-as-a-Judge': Toma la Entrada, la Respuesta real de tu agente "
+        "y el Resultado Esperado de Referencia.\n"
+        "   - Envía los datos a tu Juez Gemini (DeepEvalGeminiJudge), el cual audita el texto, "
+        "valida la consistencia matemática, el enmascaramiento de PII y la coherencia del Stop-Loss, "
+        "otorgando un Score de 0.0 a 1.0 y detallando su razonamiento lógico."
     )
     pdf.multi_cell(0, 5, p5_desc)
     pdf.ln(5)

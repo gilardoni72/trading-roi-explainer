@@ -118,7 +118,18 @@ def create_pdf():
          "   * Model Cost (Costos totales acumulados en dolares).\n"
          "   * Total Traces (Volumen total de transacciones simuladas).\n"
          "   * Model Usage (Distribucion de tokens y llamadas por modelo).\n"
-         "   * Latency averages (Historia de velocidad y rendimiento de tu API).")
+         "   * Latency averages (Historia de velocidad y rendimiento de tu API)."),
+         
+        ("Paso 5: Explicacion del Juez Cognitivo de DeepEval (Juez Gemini)",
+         "¿Cómo funciona el Juez cognitivo de tu Trabajo Final?\n"
+         "1. Entrada de Datos: Toma el input (consulta), el actual_output (respuesta del agente) "
+         "y el expected_output (tu verdad de referencia de calidad).\n"
+         "2. El Juicio (LLM-as-a-Judge): DeepEval envia estos datos a tu Juez Gemini personalizado, "
+         "el cual audita el enmascaramiento de privacidad PII, la consistencia matematica de comisiones "
+         "y ROI, y la idoneidad de las recomendaciones, otorgando un Score de 0.0 a 1.0 (en tu captura "
+         "un excelente 0.96 / 1.0) y detallando el razonamiento logico del veredicto.\n"
+         "3. Sincronizacion de Evaluacion: Permite al profesor ver los Dataset Runs de forma interactiva "
+         "en la consola web de Langfuse Cloud en la pestaña 'Datasets -> Runs' con comparativas lado a lado.")
     ]
 
     for title, desc in steps:
