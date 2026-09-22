@@ -81,16 +81,31 @@ def create_pdf():
 
     steps = [
         ("Paso 1: Crear el Dataset de 20 casos de prueba en la Nube",
-         "Ejecuta en PowerShell el script poblador de datasets:\n"
-         "Comando: python codigo/scripts/create_langfuse_dataset.py\n"
-         "- Que señalar: En el navegador, actualiza y muestra en la pestaña 'Datasets' el dataset "
-         "'trading_agent_evaluation' con tus 20 casos de prueba creados de forma instantanea."),
+         "¿Qué es un Dataset en Langfuse?\n"
+         "Un dataset es una coleccion estructurada de registros de prueba (consultas reales de entrada de los usuarios) "
+         "emparejadas con sus resultados esperados de referencia (SLA o Expected Output). Funciona como la plantilla "
+         "de calibracion oficial (el 'patron oro') para auditar el comportamiento de Gemini 3.5 de forma automatizada.\n\n"
+         "¿Cómo fue que lo creamos?\n"
+         "1. Diseñamos localmente un archivo estructurado en formato JSON Lines llamado 'casos_ejemplo_trading.jsonl' "
+         "conteniendo 20 casos reales balanceados (50% positivos y 50% negativos para estresar las fallas).\n"
+         "2. Desarrollamos el script en Python 'create_langfuse_dataset.py' que lee ese archivo local linea por linea "
+         "y sube los 20 casos al dataset 'trading_agent_evaluation' en la nube usando el metodo 'create_dataset_item()'.\n\n"
+         "Comando literal para ejecutar en PowerShell:\n"
+         "python codigo/scripts/create_langfuse_dataset.py\n\n"
+         "- Qué señalar: Actualiza tu navegador en la pestaña 'Datasets' y enseña tu dataset creado con los 20 casos cargados."),
          
         ("Paso 2: Ejecutar la Corrida de Evaluacion en Vivo (con Gemini 3.5)",
-         "Ejecuta en PowerShell la evaluacion cognitiva automatica de los 20 casos:\n"
-         "Comando: python codigo/scripts/run_langfuse_evaluation.py\n"
-         "- Que señalar: Tu agente procesara cada caso de forma real, enmascarara las identidades a "
-         "M**** G**** y enviara las metricas de trazas, costos y respuestas a Langfuse Cloud."),
+         "¿Qué hace este script técnicamente?\n"
+         "1. Descarga dinamicamente los 20 items del dataset desde la nube de Langfuse usando 'get_dataset()'.\n"
+         "2. Procesa cada caso en tu agente, el cual sanitiza el nombre (PII) e implementa la transaccionalidad SRE "
+         "conmutando de forma segura al simulador offline local en milisegundos si la API Key esta bloqueada.\n"
+         "3. Vinculacion Asociativa: Llama al metodo 'create_dataset_run_item()' para asociar de forma inalterable "
+         "la traza con su correspondiente item en el Dataset de Langfuse. Al finalizar, ejecuta un vaciado "
+         "asincrono 'langfuse.flush()' para garantizar la subida del 100% de los datos.\n\n"
+         "Comando literal para ejecutar en PowerShell:\n"
+         "python codigo/scripts/run_langfuse_evaluation.py\n\n"
+         "- Qué señalar: Tu agente evaluara los 20 casos, enmascarara las identidades y enviara todas "
+         "las metricas y comparativas de respuestas de forma automatica a la nube de Langfuse."),
          
         ("Paso 3: Mostrar las Trazas Individuales (Tracing)",
          "Ve a la pestaña 'Tracing' en tu navegador de Langfuse y selecciona una consulta exitosa:\n"
