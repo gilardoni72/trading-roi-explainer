@@ -2,6 +2,7 @@ import os
 import json
 import logging
 import httpx
+import asyncio
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any
 from config import settings
@@ -145,7 +146,7 @@ class TradingService:
                     is_demo=True
                 )
             else:
-                # Consumo de API real de CoinGecko
+                # Consumo de API real de CoinGecko ejecutado en un hilo síncrono aislado
                 try:
                     # Mapeo de simbolos a ids de coingecko
                     coingecko_ids = {
@@ -155,18 +156,22 @@ class TradingService:
                     }
                     cg_id = coingecko_ids.get(sym, "bitcoin")
                     url = f"https://api.coingecko.com/api/v3/simple/price?ids={cg_id}&vs_currencies=usd"
-                    async with httpx.AsyncClient() as client:
-                        response = await client.get(url, timeout=10.0)
-                        response.raise_for_status()
-                        data = response.json()
-                        price = data[cg_id]["usd"]
-                        span.set_attribute("trading.price_usd", float(price))
-                        return AssetPrice(
-                            symbol=sym,
-                            name=sym,
-                            price_usd=float(price),
-                            is_demo=False
-                        )
+                    
+                    def fetch_price():
+                        with httpx.Client() as client:
+                            res = client.get(url, timeout=10.0)
+                            res.raise_for_status()
+                            return res.json()
+                            
+                    data = await asyncio.to_thread(fetch_price)
+                    price = data[cg_id]["usd"]
+                    span.set_attribute("trading.price_usd", float(price))
+                    return AssetPrice(
+                        symbol=sym,
+                        name=sym,
+                        price_usd=float(price),
+                        is_demo=False
+                    )
                 except Exception as e:
                     logger.error(f"Error llamando a CoinGecko: {str(e)}. Fallback a demo.")
                     span.set_status(trace.StatusCode.ERROR, description=str(e))

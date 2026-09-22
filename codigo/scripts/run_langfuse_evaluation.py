@@ -1,11 +1,11 @@
-import asyncio
 import os
 import sys
 import json
+import asyncio
 import nest_asyncio
 from langfuse import Langfuse
 
-# Permitir bucles de eventos anidados para evitar conflictos con nest_asyncio en entornos interactivos
+# Permitir bucles de eventos anidados para evitar conflictos de asyncio en Windows
 nest_asyncio.apply()
 
 # Forzar codificacion UTF-8 para evitar errores de consola en Windows con Emojis
@@ -25,9 +25,10 @@ manager = FinancialAgentManager(
     demo_mode=False
 )
 
-async def evaluate_item(*, item, **kwargs):
+def evaluate_item(*, item, **kwargs):
     """
-    Función de tarea asíncrona nativa para procesar cada ítem del dataset.
+    Función de tarea síncrona que utiliza nest_asyncio para ejecutar run_query
+    dentro del bucle de eventos activo de forma segura.
     """
     user_name = item.input["user_name"]
     user_query = item.input["message"]
@@ -36,18 +37,20 @@ async def evaluate_item(*, item, **kwargs):
     print(f"Consulta: '{user_query}'")
     
     try:
-        response_text = await manager.run_query(
+        # Obtener el bucle de eventos activo y ejecutar la consulta asíncrona síncronamente
+        loop = asyncio.get_event_loop()
+        response_text = loop.run_until_complete(manager.run_query(
             user_name=user_name,
             user_query=user_query,
             stream=False
-        )
+        ))
         print("✅ Simulación completada con éxito.")
         return response_text
     except Exception as e:
         print(f"❌ Error procesando ítem: {str(e)}")
         return f"Error: {str(e)}"
 
-async def run_evaluation_async():
+def run_evaluation():
     print("=" * 70)
     print("🚀 INICIANDO CORRIDA DE EVALUACIÓN SOBRE EL DATASET EN LANGFUSE CLOUD")
     print("=" * 70)
@@ -66,9 +69,9 @@ async def run_evaluation_async():
         print(f"[Langfuse] Descargando dataset '{dataset_name}' de la nube...")
         dataset = langfuse.get_dataset(dataset_name)
         
-        # 2. Correr la evaluación de forma nativa utilizando 'run_experiment' de Langfuse
-        # Esto crea automáticamente las trazas, las asocia al dataset y las sube a la nube.
-        print(f"[Langfuse] Iniciando experimento asíncrono con {len(dataset.items)} casos de prueba...")
+        # 2. Correr la evaluación utilizando 'run_experiment' con la tarea protegida por nest_asyncio.
+        # Esto previene conflictos de hilos de red y asegura el correcto funcionamiento de CoinGecko y Gemini.
+        print(f"[Langfuse] Iniciando experimento con {len(dataset.items)} casos de prueba...")
         results = dataset.run_experiment(
             name="Evaluacion_Gemini3.5_Flash",
             run_name="Run_Marcelo_Gilardoni",
@@ -76,7 +79,7 @@ async def run_evaluation_async():
         )
         
         # 3. Forzar el flush de todas las trazas de evaluacion antes de salir
-        print("[Langfuse] Sincronizando y subiendo trazas pendientes a la nube...")
+        print("[Langfuse] Sincronizando y subiendo trazas de evaluación de forma forzada...")
         langfuse.flush()
                 
         print("\n" + "=" * 70)
@@ -89,8 +92,5 @@ async def run_evaluation_async():
         print(f"\n❌ Error al correr la evaluación del Dataset: {str(e)}")
         print("=" * 70)
 
-def main():
-    asyncio.run(run_evaluation_async())
-
 if __name__ == "__main__":
-    main()
+    run_evaluation()
